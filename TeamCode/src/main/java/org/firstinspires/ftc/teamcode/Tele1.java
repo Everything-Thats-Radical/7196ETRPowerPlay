@@ -19,7 +19,7 @@ public class Tele1 extends OpMode {
     private DcMotor BRDrive = null;
     private CRServo liftArm = null;
     private CRServo liftClaw = null;
-    private DcMotor slideY = null;
+    private DcMotor STRAIGHTUPPPP = null;
 
 
     @Override
@@ -34,7 +34,7 @@ public class Tele1 extends OpMode {
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
         liftArm = hardwareMap.get(CRServo.class, "liftArm");
         liftClaw = hardwareMap.get(CRServo.class, "liftClaw");
-        slideY = hardwareMap.get(DcMotor.class, "slideY");
+        STRAIGHTUPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUPPPP");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -42,7 +42,7 @@ public class Tele1 extends OpMode {
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         liftArm.setDirection(CRServo.Direction.FORWARD);
         liftClaw.setDirection(CRServo.Direction.FORWARD);
-        slideY.setDirection(DcMotor.Direction.FORWARD);
+        STRAIGHTUPPPP.setDirection(DcMotor.Direction.FORWARD);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -64,8 +64,8 @@ public class Tele1 extends OpMode {
         boolean armLeft = gamepad2.b;
         boolean clawOpen = gamepad2.y;
         boolean clawClosed = gamepad2.a;
-        boolean slideUp = gamepad1.dpad_up;
-        boolean slideDown = gamepad1.dpad_down;
+        boolean liftUp = gamepad1.dpad_up;
+        boolean liftDown = gamepad1.dpad_down;
 
 
         //Retrieve driving values from controller
@@ -112,12 +112,12 @@ public class Tele1 extends OpMode {
             liftClaw.setPower(0);
         }
 
-        if(slideUp && !slideDown){
-            slideY.setPower(.4);
-        } else if(slideDown && !slideUp){
-            slideY.setPower(-.4);
+        if(liftUp && !liftDown){
+            STRAIGHTUPPPP.setPower(.4);
+        } else if(liftDown && !liftUp){
+            STRAIGHTUPPPP.setPower(-.4);
         } else {
-            slideY.setPower(0);
+            STRAIGHTUPPPP.setPower(0);
         }
 
         // Show the elapsed game time and wheel power.
@@ -138,6 +138,6 @@ public class Tele1 extends OpMode {
         BRDrive.setPower(0);
         liftArm.setPower(0);
         liftClaw.setPower(0);
-        slideY.setPower(0);
+        STRAIGHTUPPPP.setPower(0);
     }
 }
