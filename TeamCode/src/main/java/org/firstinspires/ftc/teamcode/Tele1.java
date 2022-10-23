@@ -20,6 +20,7 @@ public class Tele1 extends OpMode {
     private CRServo liftArm = null;
     private CRServo liftClaw = null;
     private DcMotor STRAIGHTUPPPP = null;
+    private DcMotor spinnyBoi = null;
 
 
     @Override
@@ -35,6 +36,7 @@ public class Tele1 extends OpMode {
         liftArm = hardwareMap.get(CRServo.class, "liftArm");
         liftClaw = hardwareMap.get(CRServo.class, "liftClaw");
         STRAIGHTUPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUPPPP");
+        spinnyBoi = hardwareMap.get(DcMotor.class, "SpinnyBoi");
 
         FLDrive.setDirection(DcMotor.Direction.FORWARD);
         BLDrive.setDirection(DcMotor.Direction.FORWARD);
@@ -43,6 +45,7 @@ public class Tele1 extends OpMode {
         liftArm.setDirection(CRServo.Direction.FORWARD);
         liftClaw.setDirection(CRServo.Direction.FORWARD);
         STRAIGHTUPPPP.setDirection(DcMotor.Direction.FORWARD);
+        spinnyBoi.setDirection(DcMotor.Direction.FORWARD);
 
         telemetry.addData("Status", "Initialized");
         telemetry.update();
@@ -64,13 +67,16 @@ public class Tele1 extends OpMode {
         boolean armLeft = gamepad2.b;
         boolean clawOpen = gamepad2.y;
         boolean clawClosed = gamepad2.a;
-        boolean liftUp = gamepad1.dpad_up;
-        boolean liftDown = gamepad1.dpad_down;
+        boolean liftUp = gamepad2.dpad_up;
+        boolean liftDown = gamepad2.dpad_down;
+        boolean spinRight = gamepad2.dpad_right;
+        boolean spinLeft = gamepad2.dpad_right;
+
 
 
         //Retrieve driving values from controller
         double y = gamepad1.left_stick_y * .8; // Remember, this is reversed!
-        double x = -gamepad1.left_stick_x * .8; // Counteract imperfect strafing
+        double x = gamepad1.left_stick_x * .8; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x * .8;
 
         // Denominator is the largest motor power (absolute value) or 1
@@ -113,11 +119,19 @@ public class Tele1 extends OpMode {
         }
 
         if(liftUp && !liftDown){
-            STRAIGHTUPPPP.setPower(.4);
+            STRAIGHTUPPPP.setPower(1);
         } else if(liftDown && !liftUp){
-            STRAIGHTUPPPP.setPower(-.4);
+            STRAIGHTUPPPP.setPower(-1);
         } else {
             STRAIGHTUPPPP.setPower(0);
+        }
+
+        if(spinRight && !spinLeft){
+            spinnyBoi.setPower(.2);
+        } else if(spinLeft && !spinRight){
+            spinnyBoi.setPower(-.2);
+        } else {
+            spinnyBoi.setPower(0);
         }
 
         // Show the elapsed game time and wheel power.
@@ -139,5 +153,6 @@ public class Tele1 extends OpMode {
         liftArm.setPower(0);
         liftClaw.setPower(0);
         STRAIGHTUPPPP.setPower(0);
+        spinnyBoi.setPower(0);
     }
 }
