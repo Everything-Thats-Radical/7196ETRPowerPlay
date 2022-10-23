@@ -1,4 +1,4 @@
-package org.firstinspires.ftc.teamcode;
+package org.firstinspires.ftc.teamcode.drive;
 //import java.awt.image.*;
 import java.util.*;
 import java.io.*;
@@ -23,8 +23,8 @@ public class ColorDetection {
 
         public String telemetryString = "";
 
-        int graysConstant = 35; //We want to ignore all gray colors (the backround feild). This variable represents how close we decide the color vaules have to be to be considered gray.
-        int scanEvery = 20; //We dont need to look at every single pixel. This is how many pixels to
+        int graysConstant = 35; //We want to ignore all gray colors (the background field). This variable represents how close we decide the color values have to be to be considered gray.
+        int scanEvery = 20; //We don't need to look at every single pixel. This is how many pixels to
         // skip after looking a pixel. Lower number should slow the calculations down, but make it more accurate.
 
 
@@ -33,18 +33,18 @@ public class ColorDetection {
 
             //bmp = Bitmap.createBitmap(bmp, 0, 400, bmp.getWidth(), bmp.getHeight()-400 );
 
-            //Skipping 'scanEvery' amout of pixels, go through every pixle in the photo
+            //Skipping 'scanEvery' amount of pixels, go through every pixel in the photo
             for (int x = 0; x + scanEvery <= bmp.getWidth()-scanEvery; x += scanEvery) {
                 for (int y = 0; y + scanEvery <= bmp.getHeight()-scanEvery; y += scanEvery) {
 
-                    //Get the RGB vaules of the individual pixel. I found this online and it works very well, but I can't say I know how. https://stackoverflow.com/questions/22391353/get-color-of-each-pixel-of-an-image-using-bufferedimages
+                    //Get the RGB values of the individual pixel. I found this online and it works very well, but I can't say I know how. https://stackoverflow.com/questions/22391353/get-color-of-each-pixel-of-an-image-using-bufferedimages
                     int rgb = bmp.getPixel(x, y);
 
                     int red =   (rgb & 0x00ff0000) >> 16;
                     int green = (rgb & 0x0000ff00) >> 8;
                     int blue =   rgb & 0x000000ff;
 
-                    //If the RGB color vaules are about the same, the color is a shade of gray, white, or black and is not what we are looking for.
+                    //If the RGB color values are about the same, the color is a shade of gray, white, or black and is not what we are looking for.
                     if ( Math.abs(red-green) > graysConstant || Math.abs(red-blue) > graysConstant || Math.abs(green-blue) > graysConstant ) {
 
                         //If red is the most prominent color, save the position of this pixel to the lists of red pixels.
@@ -52,12 +52,12 @@ public class ColorDetection {
                             redXVaules.add(x);
                             redYVaules.add(y);
                         }
-                        //If green is the most prominet color, save the position of this pixel to the lists of green pixels.
+                        //If green is the most prominent color, save the position of this pixel to the lists of green pixels.
                         else if (green>red && green>blue) {
                             greenXVaules.add(x);
                             greenYVaules.add(y);
                         }
-                        //If blue is the most prominet color, save the position of this pixel to the lists of blue pixels.
+                        //If blue is the most prominent color, save the position of this pixel to the lists of blue pixels.
                         else if (blue>red && blue>green) {
                             blueXVaules.add(x);
                             blueYVaules.add(y);
@@ -68,7 +68,7 @@ public class ColorDetection {
 
 
 
-            //Find the averge position of every color. The dots/object are organized horzontaily, so we only need to look at the x vaules.
+            //Find the average position of every color. The dots/object are organized horizontally, so we only need to look at the x values.
             double redCenterX = center( redXVaules, bmp.getWidth() );
             double greenCenterX = center( greenXVaules, bmp.getWidth() );
             double blueCenterX = center( blueXVaules, bmp.getWidth() );
@@ -98,7 +98,7 @@ public class ColorDetection {
 
         }// end of GetLocation method
 
-        static double center( ArrayList<Integer> array, int max ) {
+        double center( ArrayList<Integer> array, int max ) {
             //This just find the averge value of an array, as long as there is data inside of it
             if( array.size() > 0 ) {
                 double total = 0;
