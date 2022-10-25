@@ -17,8 +17,8 @@ public class ColorDetectionNuevo {
     // An open letter to the reader of this code:
 
     // You may notice that there are many spelling mistakes in this document,
-    // and that many of the mistakes were copied and pasted several times to make
-    // those mistakes even more pronounced and obvious. It is to my great
+    // and that many of those mistakes were copied and pasted several times,
+    // making them even more pronounced and obvious. It is to my great
     // disappointment that I inform you that it was indeed the great
     // Rocco John D'Antico, in the 2021-2022 Freight Frenzy FTC season,
     // who misspelled everything here. I neither have the time nor the mental
@@ -33,7 +33,23 @@ public class ColorDetectionNuevo {
     // his code the following season:
 
     /*
-    Oh Rocco, so great at coding
+    My fierce Rocco, you inspire me to write.
+    How we love the way you code and misspell,
+    Invading our minds day and through the night,
+    Always dreaming about the mademoiselle.
+
+    Let us compare you to a bold cherry?
+    You are more mighty, hard-working and brave.
+    Ice bites the debris of February,
+    And wintertime has the amazing rave.
+
+    How do we love you? Let us count the ways.
+    We love your bad at spelling bravery.
+    Wanting your handsomeness fills my days.
+    Our love for you is the old slavery.
+
+    Now we must away with a chemic heart,
+    Remember our grave words whilst we're apart.
     */
 
 
