@@ -19,7 +19,6 @@ public class Auto1 extends LinearOpMode {
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         ConceptWebcam cam = new ConceptWebcam();
-        ObjectDetection detect = new ObjectDetection();
 
         Bitmap fieldImage;
         String position = "start";
@@ -40,7 +39,6 @@ public class Auto1 extends LinearOpMode {
                 sleep(500);
             }
             fieldImage = cam.frameQueue.peek();
-            position = detect.getLocation(fieldImage); //jk
         } finally {
             cam.closeCamera();
         }
