@@ -70,7 +70,7 @@ public class ColorDetectionNuevo {
 
 
     @RequiresApi(api = Build.VERSION_CODES.Q)
-    public String getLocation (Bitmap bmp) {
+    public String getColor (Bitmap bmp) {
 
         bmp = Bitmap.createBitmap(bmp, 0, 400, bmp.getWidth(), bmp.getHeight() - 400);
 
@@ -104,12 +104,14 @@ public class ColorDetectionNuevo {
             }
         }
         //
+        String coneColor= "";
         if (totalReds > totalGreens && totalReds > totalBlues){
-            return "red";
+            coneColor= "red";
         } else if(totalGreens > totalBlues && totalGreens > totalReds){
-            return "green";
+            coneColor= "green";
         } else if(totalBlues > totalGreens && totalBlues > totalReds){
-            return "blue";
+            coneColor= "blue";
         }
+        return coneColor;
     }
 }
