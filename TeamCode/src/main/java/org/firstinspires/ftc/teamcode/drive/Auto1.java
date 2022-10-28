@@ -13,7 +13,7 @@ import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 //import com.qualcomm.robotcore.hardware.Servo;
 import android.graphics.Bitmap;
 
-@Autonomous(name = "ABCR")
+@Autonomous(name = "Auto1")
 public class Auto1 extends LinearOpMode {
     @Override
     public void runOpMode() {
@@ -21,7 +21,7 @@ public class Auto1 extends LinearOpMode {
         ConceptWebcam cam = new ConceptWebcam();
         ObjectDetection detect = new ObjectDetection();
 
-        Bitmap bmp;
+        Bitmap fieldImage;
         String position = "start";
 
         cam.callbackHandler = CallbackLooper.getDefault().getHandler();
@@ -31,16 +31,50 @@ public class Auto1 extends LinearOpMode {
         cam.initializeFrameQueue(2);
         AppUtil.getInstance().ensureDirectoryExists(cam.captureDirectory);
 
+        try {
+            telemetry.addData("Ready", "");
+            telemetry.update();
+            while (cam.frameQueue.peek() == null) {
+                cam.openCamera();
+                cam.startCamera();
+                sleep(500);
+            }
+            fieldImage = cam.frameQueue.peek();
+            position = detect.getLocation(fieldImage); //jk
+        } finally {
+            cam.closeCamera();
+        }
 
+        ColorDetectionNuevo colorChecker = new ColorDetectionNuevo();
+        String color = colorChecker.getColor(fieldImage);
+
+        waitForStart();
+
+        //Write generic movement code
+
+        if(color.equals("blue")){
+            //Do stuff
+        }
+        else if(color.equals("red")){
+            //Do stuff
+        }
+        else if(color.equals("green")){
+            //Do stuff
+        }
+
+
+
+        /*
         Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d())
                 .strafeRight(10)
                 .forward(5)
                 .build();
 
-        waitForStart();
 
         if(isStopRequested()) return;
 
         drive.followTrajectory(myTrajectory);
+
+         */
     }
 }
