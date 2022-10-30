@@ -81,9 +81,9 @@ public class ColorDetectionNuevo {
                 //Get the RGB vaules of the individual pixel. I found this online and it works very well, but I can't say I know how. https://stackoverflow.com/questions/22391353/get-color-of-each-pixel-of-an-image-using-bufferedimages
                 int rgb = bmp.getPixel(x, y);
 
-                int red = (rgb & 0x00ff0000) >> 16;
-                int green = (rgb & 0x0000ff00) >> 8;
-                int blue = rgb & 0x000000ff;
+                int red = (rgb & 0x00ff0000) >> 16; // get red value of the pixel we are looking at
+                int green = (rgb & 0x0000ff00) >> 8; // get green value
+                int blue = rgb & 0x000000ff; // get blue value
 
                 //If the RGB color vaules are about the same, the color is a shade of gray, white, or black and is not what we are looking for.
                 if (Math.abs(red - green) > graysConstant || Math.abs(red - blue) > graysConstant || Math.abs(green - blue) > graysConstant) {

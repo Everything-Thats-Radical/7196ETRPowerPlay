@@ -1,11 +1,18 @@
 package org.firstinspires.ftc.teamcode;
 
+import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.util.ElapsedTime;
+
+import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
+import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+
+import java.lang.Math;
 
 
 @TeleOp (name = "Tele 1.0", group = "Iterative Opmode")
@@ -23,8 +30,11 @@ public class Tele1 extends OpMode {
     private DcMotor spinnyBoi = null;
 
 
+
+
     @Override
     public void init() { //Code to run ONCE when the driver hits INIT
+
 
         telemetry.addData("Status", "Initializing");
         telemetry.update();
@@ -47,11 +57,22 @@ public class Tele1 extends OpMode {
         STRAIGHTUPPPP.setDirection(DcMotor.Direction.FORWARD);
         spinnyBoi.setDirection(DcMotor.Direction.FORWARD);
 
+        BNO055IMU imu;
+        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
+        parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
+        parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
+
+
     }
 
 
+    public double getAngle() {
+        return 1.1;
+    }
     @Override
     public void start() { //Code to run ONCE when the driver hits PLAY
         runtime.reset();
@@ -62,6 +83,8 @@ public class Tele1 extends OpMode {
     public void loop() { //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
 
         // Retrieve lift values from controller
+
+
 
         boolean armRight = gamepad2.x;
         boolean armLeft = gamepad2.b;
@@ -79,16 +102,22 @@ public class Tele1 extends OpMode {
         double x = gamepad1.left_stick_x * .8; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x * .8;
 
+        // field-centric driving code: (USE FIELD-CENTRIC OR STANDARD. NOT BOTH.)
+        double joystickHeading = Math.atan2(y, x); // get heading in degrees from x and y of joystick
+        //double drivePowerHeading = joystickHeading -
 
-        // Denominator is the largest motor power (absolute value) or 1
-        // This ensures all the powers maintain the same ratio, but only when at least one is out
-        // of the range [-1, 1]
+        //end of field-centric code
+
+        // standard mecnaum driving code: (USE FIELD-CENTRIC OR STANDARD. NOT BOTH.)
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x - rx) / denominator;
         double backLeftPower = (y - x - rx) / denominator;
         double frontRightPower = (y - x + rx) / denominator;
         double backRightPower = (y + x + rx) / denominator;
+        // end of standard mecanum code
 
+
+        // set power to motors
         FLDrive.setPower(frontLeftPower);
         FRDrive.setPower(frontRightPower);
         BLDrive.setPower(backLeftPower);
