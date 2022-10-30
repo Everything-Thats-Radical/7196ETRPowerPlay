@@ -1,5 +1,5 @@
 package org.firstinspires.ftc.teamcode.drive;
-
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
@@ -17,11 +17,15 @@ import android.graphics.Bitmap;
 
 @Autonomous(name = "Auto1")
 public class Auto1 extends LinearOpMode {
+    private CRServo claw = null;
 
     @Override
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         ConceptWebcam cam = new ConceptWebcam();
+        claw = hardwareMap.get(CRServo.class, "liftClaw");
+        claw.setDirection(CRServo.Direction.FORWARD);
+
 
         Pose2d startPose = new Pose2d(0, 0, 0);
         drive.setPoseEstimate(startPose);
@@ -61,6 +65,8 @@ public class Auto1 extends LinearOpMode {
                 .strafeLeft(12)
                 .forward(3)
                 //Open Claw Here
+                .addTemporalMarker(() -> claw.setPower(.5))
+                .waitSeconds(.5)
                 .back(3)
                 .strafeLeft(12)
                 .forward(45)
