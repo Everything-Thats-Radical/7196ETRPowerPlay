@@ -79,10 +79,13 @@ public class Auto1 extends LinearOpMode {
         //Chooses where to park based on the color of the cone.
         if(color.equals("blue")){
             //Strafe 24 inches
+            drive.followTrajectorySequence(zone2);
             telemetry.addData("Color: ", color);
         }
         else if(color.equals("green")){
             //Strafe 48 inches
+            drive.followTrajectorySequence(zone2);
+            drive.followTrajectorySequence(zone2);
             telemetry.addData("Color: ", color);
         }
         else if(color.equals("red")){
