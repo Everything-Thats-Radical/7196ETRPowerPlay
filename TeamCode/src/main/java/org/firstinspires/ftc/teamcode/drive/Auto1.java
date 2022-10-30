@@ -1,8 +1,8 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-//import com.acmerobotics.roadrunner.geometry.Vector2d;
-import com.acmerobotics.roadrunner.trajectory.Trajectory;
+import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
@@ -10,7 +10,9 @@ import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.network.CallbackLooper;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
-//import com.qualcomm.robotcore.hardware.Servo;
+import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
+
+import com.qualcomm.robotcore.hardware.Servo;
 import android.graphics.Bitmap;
 
 @Autonomous(name = "Auto1")
@@ -20,6 +22,8 @@ public class Auto1 extends LinearOpMode {
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         ConceptWebcam cam = new ConceptWebcam();
+
+        Pose2d startPose = new Pose2d(0, 0, 0);
 
         Bitmap fieldImage;
         String position = "start";
@@ -51,8 +55,10 @@ public class Auto1 extends LinearOpMode {
         }
 
         waitForStart();
+        TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
+                .strafeRight(40)
+                .build();
 
-        
 
         //Chooses where to park based on the color of the cone.
         Boolean parked = false;
@@ -60,11 +66,11 @@ public class Auto1 extends LinearOpMode {
             //Strafe 24 inches
             parked = true;
         }
-        else if(color.equals("red")){
+        else if(color.equals("green")){
             //Strafe 48 inches
             parked = true;
         }
-        else if(color.equals("green")){
+        else if(color.equals("red")){
             parked = true;
         }
 
