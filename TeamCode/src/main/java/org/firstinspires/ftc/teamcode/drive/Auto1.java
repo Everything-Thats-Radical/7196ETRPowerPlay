@@ -73,7 +73,7 @@ public class Auto1 extends LinearOpMode {
                 .turn(-90)
                 .build();
 
-        TrajectorySequence zone2 = drive.trajectorySequenceBuilder(startPose)
+        TrajectorySequence nextZone = drive.trajectorySequenceBuilder(startPose)
                 .forward(24)
                 .build();
 
@@ -85,13 +85,13 @@ public class Auto1 extends LinearOpMode {
         //Chooses where to park based on the color of the cone.
         if(color.equals("blue")){
             //Strafe 24 inches
-            drive.followTrajectorySequence(zone2);
+            drive.followTrajectorySequence(nextZone);
             telemetry.addData("Color: ", color);
         }
         else if(color.equals("green")){
             //Strafe 48 inches
-            drive.followTrajectorySequence(zone2);
-            drive.followTrajectorySequence(zone2);
+            drive.followTrajectorySequence(nextZone);
+            drive.followTrajectorySequence(nextZone);
             telemetry.addData("Color: ", color);
         }
         else if(color.equals("red")){
