@@ -6,7 +6,7 @@ import com.acmerobotics.roadrunner.trajectory.Trajectory;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-//import org.firstinspires.ftc.robotcore.external.Telemetry;
+import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.network.CallbackLooper;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
@@ -15,6 +15,7 @@ import android.graphics.Bitmap;
 
 @Autonomous(name = "Auto1")
 public class Auto1 extends LinearOpMode {
+
     @Override
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
@@ -44,21 +45,30 @@ public class Auto1 extends LinearOpMode {
         }
 
         ColorDetectionNuevo colorChecker = new ColorDetectionNuevo();
-        String color = colorChecker.getColor(fieldImage);
+        String color = null;
+        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+            color = colorChecker.getColor(fieldImage);
+        }
 
         waitForStart();
 
-        //Write generic movement code
+        
 
+        //Chooses where to park based on the color of the cone.
+        Boolean parked = false;
         if(color.equals("blue")){
-            //Do stuff
+            //Strafe 24 inches
+            parked = true;
         }
         else if(color.equals("red")){
-            //Do stuff
+            //Strafe 48 inches
+            parked = true;
         }
         else if(color.equals("green")){
-            //Do stuff
+            parked = true;
         }
+
+
 
 
 
