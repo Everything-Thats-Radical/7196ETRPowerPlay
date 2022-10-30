@@ -24,6 +24,7 @@ public class Auto1 extends LinearOpMode {
         ConceptWebcam cam = new ConceptWebcam();
 
         Pose2d startPose = new Pose2d(0, 0, 0);
+        drive.setPoseEstimate(startPose);
 
         Bitmap fieldImage;
         String position = "start";
@@ -60,19 +61,27 @@ public class Auto1 extends LinearOpMode {
                 .build();
 
 
+        waitForStart();
+        if (!isStopRequested())
+            drive.followTrajectorySequence(trajSeq);
+
         //Chooses where to park based on the color of the cone.
-        Boolean parked = false;
         if(color.equals("blue")){
             //Strafe 24 inches
-            parked = true;
+            telemetry.addData("Color: ", color);
         }
         else if(color.equals("green")){
             //Strafe 48 inches
-            parked = true;
+            telemetry.addData("Color: ", color);
         }
         else if(color.equals("red")){
-            parked = true;
+            telemetry.addData("Color: ", color);
         }
+        else{
+            String noColor = "Color not detected.";
+            telemetry.addData("Color: ", noColor);
+        }
+
 
 
 
