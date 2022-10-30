@@ -57,7 +57,18 @@ public class Auto1 extends LinearOpMode {
 
         waitForStart();
         TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-                .strafeRight(40)
+                .forward(3)
+                .strafeLeft(12)
+                .forward(3)
+                //Open Claw Here
+                .back(3)
+                .strafeLeft(12)
+                .forward(45)
+                .turn(-90)
+                .build();
+
+        TrajectorySequence zone2 = drive.trajectorySequenceBuilder(startPose)
+                .forward(24)
                 .build();
 
 
@@ -82,22 +93,5 @@ public class Auto1 extends LinearOpMode {
             telemetry.addData("Color: ", noColor);
         }
 
-
-
-
-
-
-        /*
-        Trajectory myTrajectory = drive.trajectoryBuilder(new Pose2d())
-                .strafeRight(10)
-                .forward(5)
-                .build();
-
-
-        if(isStopRequested()) return;
-
-        drive.followTrajectory(myTrajectory);
-
-         */
     }
 }
