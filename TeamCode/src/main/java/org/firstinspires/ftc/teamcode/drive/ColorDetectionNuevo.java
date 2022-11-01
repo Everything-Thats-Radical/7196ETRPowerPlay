@@ -50,7 +50,7 @@ public class ColorDetectionNuevo {
 
     Now we must away with a chemic heart,
     Remember our grave words whilst we're apart.
-    
+
     */
 
     int totalReds = 0;

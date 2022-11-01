@@ -93,7 +93,7 @@ public class Tele1 extends OpMode {
         boolean liftUp = gamepad2.dpad_up;
         boolean liftDown = gamepad2.dpad_down;
         boolean spinRight = gamepad2.dpad_right;
-        boolean spinLeft = gamepad2.dpad_right;
+        boolean spinLeft = gamepad2.dpad_left;
 
 
 
