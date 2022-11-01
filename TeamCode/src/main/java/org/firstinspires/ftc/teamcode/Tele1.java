@@ -54,8 +54,8 @@ public class Tele1 extends OpMode {
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         liftArm.setDirection(CRServo.Direction.FORWARD);
         liftClaw.setDirection(CRServo.Direction.FORWARD);
-        STRAIGHTUPPPP.setDirection(DcMotor.Direction.FORWARD);
-        spinnyBoi.setDirection(DcMotor.Direction.FORWARD);
+        STRAIGHTUPPPP.setDirection(DcMotor.Direction.REVERSE);
+        spinnyBoi.setDirection(DcMotor.Direction.REVERSE);
 
         BNO055IMU imu;
         imu = hardwareMap.get(BNO055IMU.class, "imu");
@@ -90,17 +90,19 @@ public class Tele1 extends OpMode {
         boolean armLeft = gamepad2.b;
         boolean clawOpen = gamepad2.y;
         boolean clawClosed = gamepad2.a;
-        boolean liftUp = gamepad2.dpad_up;
-        boolean liftDown = gamepad2.dpad_down;
-        boolean spinRight = gamepad2.dpad_right;
-        boolean spinLeft = gamepad2.dpad_left;
-
+        boolean slowMode = gamepad1.right_bumper;
+        double speedMultiplier;
 
 
         //Retrieve driving values from controller
         double y = gamepad1.left_stick_y * .8; // Remember, this is reversed!
         double x = gamepad1.left_stick_x * .8; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x * .8;
+
+        double liftUp = gamepad2.left_stick_y;
+        double liftDown = -(gamepad2.left_stick_y);
+        double spinLeft = gamepad2.right_stick_x;
+        double spinRight = -(gamepad2.left_stick_x);
 
         // field-centric driving code: (USE FIELD-CENTRIC OR STANDARD. NOT BOTH.)
         double joystickHeading = Math.atan2(y, x); // get heading in degrees from x and y of joystick
@@ -114,14 +116,21 @@ public class Tele1 extends OpMode {
         double backLeftPower = (y - x - rx) / denominator;
         double frontRightPower = (y - x + rx) / denominator;
         double backRightPower = (y + x + rx) / denominator;
+
         // end of standard mecanum code
 
 
         // set power to motors
-        FLDrive.setPower(frontLeftPower);
-        FRDrive.setPower(frontRightPower);
-        BLDrive.setPower(backLeftPower);
-        BRDrive.setPower(backRightPower);
+        if(slowMode){
+            speedMultiplier = .3;
+        }else{
+            speedMultiplier = 1.0;
+        }
+
+        FLDrive.setPower(frontLeftPower * speedMultiplier);
+        FRDrive.setPower(frontRightPower * speedMultiplier);
+        BLDrive.setPower(backLeftPower * speedMultiplier);
+        BRDrive.setPower(backRightPower * speedMultiplier);
 
         if (armRight && !armLeft) {
             liftArm.setPower(1);
@@ -148,18 +157,31 @@ public class Tele1 extends OpMode {
             liftClaw.setPower(0);
         }
 
-        if(liftUp && !liftDown){
-            STRAIGHTUPPPP.setPower(1);
-        } else if(liftDown && !liftUp){
-            STRAIGHTUPPPP.setPower(-1);
+        if(Math.abs(liftUp) > 1.0){
+            liftUp = 1;
+        }
+        if(Math.abs(liftDown) > 1.0){
+            liftDown = 1;
+        }
+        if(Math.abs(spinLeft) > 1.0){
+            spinLeft = .25;
+        }
+        if(Math.abs(spinRight) > 1.0){
+            spinRight = .25;
+        }
+
+        if (Math.abs(liftUp) > 0.1) {
+            STRAIGHTUPPPP.setPower(liftUp);
+        } else if (Math.abs(liftDown) > .1) {
+            STRAIGHTUPPPP.setPower(liftDown);
         } else {
             STRAIGHTUPPPP.setPower(0);
         }
 
-        if(spinRight && !spinLeft){
-            spinnyBoi.setPower(.2);
-        } else if(spinLeft && !spinRight){
-            spinnyBoi.setPower(-.2);
+        if (Math.abs(spinLeft) > 0.1) {
+            spinnyBoi.setPower(spinLeft/4);
+        } else if (Math.abs(spinRight) > 0.1) {
+            spinnyBoi.setPower(spinRight/4);
         } else {
             spinnyBoi.setPower(0);
         }
