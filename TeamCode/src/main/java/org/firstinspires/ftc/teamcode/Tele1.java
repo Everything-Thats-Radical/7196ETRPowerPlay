@@ -99,8 +99,8 @@ public class Tele1 extends OpMode {
         double x = gamepad1.left_stick_x * .8; // Counteract imperfect strafing
         double rx = gamepad1.right_stick_x * .8;
 
-        double liftUp = gamepad2.left_stick_y;
-        double liftDown = -(gamepad2.left_stick_y);
+        double liftUp = -(gamepad2.left_stick_y);
+        double liftDown = gamepad2.left_stick_y;
         double spinLeft = gamepad2.right_stick_x;
         double spinRight = -(gamepad2.left_stick_x);
 
