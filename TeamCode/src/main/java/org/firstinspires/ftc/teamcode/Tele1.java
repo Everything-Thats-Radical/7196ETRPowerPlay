@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode;
 
+//import com.google.blocks.ftcrobotcontroller.runtime.BNO055IMUAccess; Had imported, but was giving error
+// kept it in just in case, because I (Isaiah) am not sure it was me who wanted it here
 import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
@@ -79,6 +81,7 @@ public class Tele1 extends OpMode {
     }
 
 
+
     @Override
     public void loop() { //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
 
@@ -93,6 +96,8 @@ public class Tele1 extends OpMode {
         boolean slowMode = gamepad1.right_bumper;
         double speedMultiplier;
 
+        double FC_YMagnitude; // field centric y magnitude
+        double FC_XMagnitude;
 
         //Retrieve driving values from controller
         double y = gamepad1.left_stick_y * .8; // Remember, this is reversed!
@@ -104,13 +109,32 @@ public class Tele1 extends OpMode {
         double spinLeft = gamepad2.right_stick_x;
         double spinRight = -(gamepad2.left_stick_x);
 
-        // field-centric driving code: (USE FIELD-CENTRIC OR STANDARD. NOT BOTH.)
-        double joystickHeading = Math.atan2(y, x); // get heading in degrees from x and y of joystick
-        //double drivePowerHeading = joystickHeading -
+        //-----------------------------------------------------------------------------------------
+        // START OF FIELD-CENTRIC DRIVING CODE: (Leaving this section in will make driving field-centric.
+        // commenting it out will make driving standard mecanum drive. There is no need to touch
+        // any other code than this to change that setting. It integrates automatically.
 
-        //end of field-centric code
+        BNO055IMU imu = null;
+        double joystickHeading = Math.atan2(y, x); // get driver's desired heading in degrees from x and y of joystick
+        // idea for atan2 found here https://www.reddit.com/r/FTC/comments/t02l65/field_centric_driving_mecanum/
 
-        // standard mecnaum driving code: (USE FIELD-CENTRIC OR STANDARD. NOT BOTH.)
+        // Get robot heading
+        double robotHeading = imu.getAngularOrientation(AxesReference.INTRINSIC, AxesOrder.ZYX, AngleUnit.DEGREES).firstAngle;
+        // above line of code taken from here https://stemrobotics.cs.pdx.edu/node/7265.html if problems occur
+
+        // get direction we should power the robot based on joystick direction and robot heading
+        double drivePowerHeading = joystickHeading - robotHeading;
+
+        FC_YMagnitude = Math.sin(drivePowerHeading); // gets y power that will go to desired, real-world heading
+        FC_XMagnitude = Math.cos(drivePowerHeading); // same as above, but X
+
+        double joystickMagnitude = Math.sqrt((Math.pow(y, 2)) + Math.pow(x, 2));
+        y = FC_YMagnitude * joystickMagnitude; // Remember, this is reversed!
+        x = FC_XMagnitude * joystickMagnitude; // Counteract imperfect strafing
+        //END OF FIELD-CENTRIC DRIVING CODE -----------------------------------------------------
+
+        // Standard mecnaum driving code: (this block is used no matter what. The field=centric code)
+        // can either be commented our or included.
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
         double frontLeftPower = (y + x - rx) / denominator;
         double backLeftPower = (y - x - rx) / denominator;
