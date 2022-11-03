@@ -65,8 +65,8 @@ public class Auto1 extends LinearOpMode {
                 .strafeLeft(12)
                 .forward(3)
                 //Opens Claw Here
-                .addTemporalMarker(() -> claw.setPower(.5))
-                .waitSeconds(.5)
+                //.addTemporalMarker(() -> claw.setPower(.5))
+                //.waitSeconds(.5)
                 .back(3)
                 .strafeLeft(12)
                 .forward(45)
