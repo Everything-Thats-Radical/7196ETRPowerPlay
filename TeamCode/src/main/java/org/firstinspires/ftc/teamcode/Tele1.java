@@ -65,10 +65,10 @@ public class Tele1 extends OpMode {
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
 
+        boolean clawClamp;
+
         telemetry.addData("Status", "Initialized");
         telemetry.update();
-
-
     }
 
 
@@ -105,16 +105,14 @@ public class Tele1 extends OpMode {
         double rx = gamepad1.right_stick_x * .8;
 
 
-        double liftUp = -(gamepad2.left_stick_y);
-        double liftDown = gamepad2.left_stick_y;
-        double spinLeft = gamepad2.right_stick_x;
-        double spinRight = -(gamepad2.left_stick_x);
+        double STRAIGHTUPPPPPower = gamepad2.left_stick_y;
+        double spinnyBoiPower = gamepad2.right_stick_x;
 
         //-----------------------------------------------------------------------------------------
         // START OF FIELD-CENTRIC DRIVING CODE: (Leaving this section in will make driving field-centric.
         // commenting it out will make driving standard mecanum drive. There is no need to touch
         // any other code than this to change that setting. It integrates automatically.
-
+/*
         BNO055IMU imu = null;
         double joystickHeading = Math.atan2(y, x); // get driver's desired heading in degrees from x and y of joystick
         // idea for atan2 found here https://www.reddit.com/r/FTC/comments/t02l65/field_centric_driving_mecanum/
@@ -126,14 +124,15 @@ public class Tele1 extends OpMode {
         // get direction we should power the robot based on joystick direction and robot heading
         double drivePowerHeading = joystickHeading - robotHeading;
 
-        FC_YMagnitude = Math.sin(drivePowerHeading); // gets y power that will go to desired, real-world heading
-        FC_XMagnitude = Math.cos(drivePowerHeading); // same as above, but X
+        FC_YMagnitude = Math.sin(drivePowerHeading); // get y magnitude from desired angle
+        FC_XMagnitude = Math.cos(drivePowerHeading); // get x magnitude from desired angle
 
-        double joystickMagnitude = Math.sqrt((Math.pow(y, 2)) + Math.pow(x, 2));
-        y = FC_YMagnitude * joystickMagnitude; // Remember, this is reversed!
-        x = FC_XMagnitude * joystickMagnitude; // Counteract imperfect strafing
+        double joystickMagnitude = Math.sqrt((Math.pow(y, 2)) + Math.pow(x, 2)); // get magnitude from original joystick pushing
+
+        y = FC_YMagnitude * joystickMagnitude; // scale y power by the original joystick magnitude
+        x = FC_XMagnitude * joystickMagnitude; // scale x power by the original joystick magnitude
         //END OF FIELD-CENTRIC DRIVING CODE -----------------------------------------------------
-
+*/
         // Standard mecnaum driving code: (this block is used no matter what. The field=centric code)
         // can either be commented our or included.
         double denominator = Math.max(Math.abs(y) + Math.abs(x) + Math.abs(rx), 1);
@@ -182,34 +181,10 @@ public class Tele1 extends OpMode {
             liftClaw.setPower(0);
         }
 
-        if(Math.abs(liftUp) > 1.0){
-            liftUp = 1;
-        }
-        if(Math.abs(liftDown) > 1.0){
-            liftDown = 1;
-        }
-        if(Math.abs(spinLeft) > 1.0){
-            spinLeft = .25;
-        }
-        if(Math.abs(spinRight) > 1.0){
-            spinRight = .25;
-        }
+        STRAIGHTUPPPP.setPower(-STRAIGHTUPPPPPower);
 
-        if (Math.abs(liftUp) > 0.1) {
-            STRAIGHTUPPPP.setPower(liftUp);
-        } else if (Math.abs(liftDown) > .1) {
-            STRAIGHTUPPPP.setPower(liftDown);
-        } else {
-            STRAIGHTUPPPP.setPower(0);
-        }
+        spinnyBoi.setPower(spinnyBoiPower/4);
 
-        if (Math.abs(spinLeft) > 0.1) {
-            spinnyBoi.setPower(spinLeft/4);
-        } else if (Math.abs(spinRight) > 0.1) {
-            spinnyBoi.setPower(spinRight/4);
-        } else {
-            spinnyBoi.setPower(0);
-        }
 
         // Show the elapsed game time and wheel power.
         telemetry.addData("Status", "Run Time: " + runtime.toString());

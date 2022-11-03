@@ -118,7 +118,7 @@ public class SampleMecanumDrive extends MecanumDrive {
         // For example, if +Y in this diagram faces downwards, you would use AxisDirection.NEG_Y.
         // BNO055IMUUtil.remapZAxis(imu, AxisDirection.NEG_Y);
 
-        FLDrive = hardwareMap.get(DcMotorEx.class, "FlDrive");
+        FLDrive = hardwareMap.get(DcMotorEx.class, "FLDrive");
         BLDrive = hardwareMap.get(DcMotorEx.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotorEx.class, "BRDrive");
         FRDrive = hardwareMap.get(DcMotorEx.class, "FRDrive");

@@ -41,7 +41,7 @@ public class Auto1 extends LinearOpMode {
 
         cam.callbackHandler = CallbackLooper.getDefault().getHandler();
         cam.cameraManager = ClassFactory.getInstance().getCameraManager();
-        cam.cameraName = hardwareMap.get(WebcamName.class, "Webcam 1");
+        cam.cameraName = hardwareMap.get(WebcamName.class, "cam");
 
         cam.initializeFrameQueue(2);
         AppUtil.getInstance().ensureDirectoryExists(cam.captureDirectory);
@@ -69,11 +69,11 @@ public class Auto1 extends LinearOpMode {
         TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
                 .forward(3)
                 .strafeLeft(12)
-                .forward(3)
+                //.forward(3)
                 //Opens Claw Here
                 //.addTemporalMarker(() -> claw.setPower(.5))
                 //.waitSeconds(.5)
-                .back(3)
+                //.back(3)
                 .strafeLeft(12)
                 .forward(45)
                 .turn(-90)
