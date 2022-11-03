@@ -17,13 +17,19 @@ import android.graphics.Bitmap;
 
 @Autonomous(name = "Auto1")
 public class Auto1 extends LinearOpMode {
+
+    // create motor and servo objects
     private CRServo claw = null;
 
     @Override
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         ConceptWebcam cam = new ConceptWebcam();
+
+        // Connect motors and servos to control hub
         claw = hardwareMap.get(CRServo.class, "liftClaw");
+
+        // set servo and motor directions
         claw.setDirection(CRServo.Direction.FORWARD);
 
 
