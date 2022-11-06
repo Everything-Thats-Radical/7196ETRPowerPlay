@@ -67,6 +67,7 @@ public class Auto1 extends LinearOpMode {
 
         waitForStart();
         TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
+                /*
                 .forward(3)
                 .strafeLeft(12)
                 //.forward(3)
@@ -76,6 +77,14 @@ public class Auto1 extends LinearOpMode {
                 //.back(3)
                 .strafeLeft(12)
                 .forward(45)
+                .turn(-90)
+                .build();
+                */
+                .forward(3)
+                .turn(90)
+                .forward(24)
+                .turn(-90)
+                .forward(42)
                 .turn(-90)
                 .build();
 
