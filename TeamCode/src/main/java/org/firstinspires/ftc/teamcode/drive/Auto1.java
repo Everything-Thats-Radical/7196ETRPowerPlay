@@ -84,7 +84,7 @@ public class Auto1 extends LinearOpMode {
                 .turn(90)
                 .forward(24)
                 .turn(-90)
-                .forward(42)
+                .forward(45)
                 .turn(-90)
                 .build();
 
