@@ -1,19 +1,18 @@
 package org.firstinspires.ftc.teamcode.drive;
 import com.qualcomm.robotcore.hardware.CRServo;
-import com.acmerobotics.roadrunner.geometry.Vector2d;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
-import com.acmerobotics.roadrunner.trajectory.TrajectoryBuilder;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.Telemetry;
 import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
 import org.firstinspires.ftc.robotcore.internal.network.CallbackLooper;
 import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-import com.qualcomm.robotcore.hardware.Servo;
 import android.graphics.Bitmap;
+import android.os.Build;
+
+import androidx.annotation.RequiresApi;
 
 @Autonomous(name = "Auto1")
 public class Auto1 extends LinearOpMode {
@@ -21,22 +20,23 @@ public class Auto1 extends LinearOpMode {
     // create motor and servo objects
     private CRServo claw = null;
 
+    @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void runOpMode() {
         SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
         ConceptWebcam cam = new ConceptWebcam();
 
         // Connect motors and servos to control hub
-        claw = hardwareMap.get(CRServo.class, "liftClaw");
+        //claw = hardwareMap.get(CRServo.class, "liftClaw");
 
         // set servo and motor directions
-        claw.setDirection(CRServo.Direction.FORWARD);
+        //claw.setDirection(CRServo.Direction.FORWARD);
 
 
         Pose2d startPose = new Pose2d(0, 0, 0);
         drive.setPoseEstimate(startPose);
 
-        Bitmap fieldImage;
+        Bitmap fieldImage = null;
         String position = "start";
 
         cam.callbackHandler = CallbackLooper.getDefault().getHandler();
@@ -55,33 +55,42 @@ public class Auto1 extends LinearOpMode {
                 sleep(500);
             }
             fieldImage = cam.frameQueue.peek();
-        } finally {
-            cam.closeCamera();
+        } catch (Exception e)
+        {
+            telemetry.addData("Cow too too", "");
+            telemetry.update();
+            sleep(1000);
         }
+        finally {
+            cam.closeCamera();
+            telemetry.addData("Closed Camera", "");
+            telemetry.update();
+        }
+
+        telemetry.addData("!@!", String.valueOf(fieldImage.getColor(0,0))); // checks if image is grabbed
+        telemetry.update();
+        sleep(2000);
+        String color = "value retrieval failed";
+
+
 
         ColorDetectionNuevo colorChecker = new ColorDetectionNuevo();
-        String color = null;
-        if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
+        //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
             color = colorChecker.getColor(fieldImage);
-        }
+        //}
 
-        waitForStart();
+        telemetry.addData("The cone is ", color);
+        telemetry.update();
+
         TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-                /*
+
                 .forward(3)
-                .strafeLeft(12)
+                .turn(90)
                 //.forward(3)
                 //Opens Claw Here
                 //.addTemporalMarker(() -> claw.setPower(.5))
                 //.waitSeconds(.5)
                 //.back(3)
-                .strafeLeft(12)
-                .forward(45)
-                .turn(-90)
-                .build();
-                */
-                .forward(3)
-                .turn(90)
                 .forward(24)
                 .turn(-90)
                 .forward(45)
@@ -97,25 +106,104 @@ public class Auto1 extends LinearOpMode {
         if (!isStopRequested())
             drive.followTrajectorySequence(trajSeq);
 
-        //Chooses where to park based on the color of the cone.
-        if(color.equals("blue")){
-            //Strafe 24 inches
-            drive.followTrajectorySequence(nextZone);
-            telemetry.addData("Color: ", color);
-        }
-        else if(color.equals("green")){
-            //Strafe 48 inches
-            drive.followTrajectorySequence(nextZone);
-            drive.followTrajectorySequence(nextZone);
-            telemetry.addData("Color: ", color);
-        }
-        else if(color.equals("red")){
-            telemetry.addData("Color: ", color);
-        }
-        else{
-            String noColor = "Color not detected.";
-            telemetry.addData("Color: ", noColor);
-        }
 
+
+        if (color.equals(null)) {
+            telemetry.addData("Null?", "heck yeah it's null");
+            telemetry.update();
+        }
+        if (!color.equals(null)) {
+            telemetry.addData("Not null?", "heck no it's not null");
+            telemetry.update();
+        }
+        sleep(1000);
+        //Chooses where to park based on the color of the cone.
+        //if (!color.equals(null)) {
+            if (color.equals("blue")) {
+                //Strafe 24 inches
+                drive.followTrajectorySequence(nextZone);
+                telemetry.addData("Color: ", color);
+                telemetry.update();
+            } else if (color.equals("red")) {
+                //Strafe 48 inches
+                drive.followTrajectorySequence(nextZone);
+                drive.followTrajectorySequence(nextZone);
+                telemetry.addData("Color: ", color);
+            } else if (color.equals("green")) {
+                telemetry.addData("Color: ", color);
+            } else {
+                String noColor = "Color not detected.";
+                telemetry.addData("Color: ", noColor);
+            }
+        //}
+    }
+
+    @Autonomous(name = "Auto1")
+    public static class ColorSensorAuto extends LinearOpMode {
+
+        // create motor and servo objects
+        private CRServo claw = null;
+
+        @RequiresApi(api = Build.VERSION_CODES.Q)
+        @Override
+        public void runOpMode() {
+            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
+
+            Pose2d startPose = new Pose2d(0, 0, 0);
+            drive.setPoseEstimate(startPose);
+
+            Bitmap fieldImage = null;
+            String position = "start";
+
+
+            telemetry.addData("!@!", String.valueOf(fieldImage.getColor(0,0))); // checks if image is grabbed
+            telemetry.update();
+            sleep(2000);
+            String color = "value retrieval failed";
+
+
+            telemetry.addData("The cone is ", color);
+            telemetry.update();
+
+            TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
+
+                    .forward(3)
+                    .turn(90)
+                    //.forward(3)
+                    //Opens Claw Here
+                    //.addTemporalMarker(() -> claw.setPower(.5))
+                    //.waitSeconds(.5)
+                    //.back(3)
+                    .forward(24)
+                    .turn(-90)
+                    .forward(45)
+                    .turn(-90)
+                    .build();
+
+            TrajectorySequence nextZone = drive.trajectorySequenceBuilder(startPose)
+                    .forward(24)
+                    .build();
+
+
+            waitForStart();
+            if (!isStopRequested())
+                drive.followTrajectorySequence(trajSeq);
+
+            sleep(1000);
+                if (color.equals("blue")) {
+                    drive.followTrajectorySequence(nextZone);
+                    telemetry.addData("Color: ", color);
+                    telemetry.update();
+                } else if (color.equals("red")) {
+                    drive.followTrajectorySequence(nextZone);
+                    drive.followTrajectorySequence(nextZone);
+                    telemetry.addData("Color: ", color);
+                } else if (color.equals("green")) {
+                    telemetry.addData("Color: ", color);
+                } else {
+                    String noColor = "Color not detected.";
+                    telemetry.addData("Color: ", noColor);
+                }
+        }
     }
 }

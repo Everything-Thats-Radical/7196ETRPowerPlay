@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 //import java.awt.image.*;
+import static org.firstinspires.ftc.robotcore.external.BlocksOpModeCompanion.telemetry;
+
 import java.util.*;
 import java.io.*;
 import android.graphics.Bitmap;
@@ -63,8 +65,6 @@ public class ColorDetectionNuevo {
     ArrayList<Integer> blueXVaules = new ArrayList<Integer>();
     ArrayList<Integer> blueYVaules = new ArrayList<Integer>();
 
-    public String telemetryString = "";
-
     int graysConstant = 35; //We want to ignore all gray colors (the backround feild). This variable represents how close we decide the color vaules have to be to be considered gray.
     int scanEvery = 20; //We dont need to look at every single pixel. This is how many pixels to
     // skip after looking a pixel. Lower number should slow the calculations down, but make it more accurate.
@@ -105,7 +105,7 @@ public class ColorDetectionNuevo {
             }
         }
         //
-        String coneColor= "";
+        String coneColor= "red";
         if (totalReds > totalGreens && totalReds > totalBlues){
             coneColor= "red";
         } else if(totalGreens > totalBlues && totalGreens > totalReds){
