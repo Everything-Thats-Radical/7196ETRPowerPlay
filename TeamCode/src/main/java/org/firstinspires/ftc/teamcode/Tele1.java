@@ -106,7 +106,7 @@ public class Tele1 extends OpMode {
 
 
         double STRAIGHTUPPPPPower = gamepad2.left_stick_y;
-        double spinnyBoiPower = gamepad2.right_stick_x;
+        double spinnyBoiPower = gamepad2.left_stick_x;
 
         //-----------------------------------------------------------------------------------------
         // START OF FIELD-CENTRIC DRIVING CODE: (Leaving this section in will make driving field-centric.

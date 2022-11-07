@@ -55,28 +55,25 @@ public class Auto1 extends LinearOpMode {
                 sleep(500);
             }
             fieldImage = cam.frameQueue.peek();
-        } catch (Exception e)
-        {
+        } catch (Exception e) {
             telemetry.addData("Cow too too", "");
             telemetry.update();
             sleep(1000);
-        }
-        finally {
+        } finally {
             cam.closeCamera();
             telemetry.addData("Closed Camera", "");
             telemetry.update();
         }
 
-        telemetry.addData("!@!", String.valueOf(fieldImage.getColor(0,0))); // checks if image is grabbed
+        telemetry.addData("!@!", String.valueOf(fieldImage.getColor(0, 0))); // checks if image is grabbed
         telemetry.update();
         sleep(2000);
         String color = "value retrieval failed";
 
 
-
         ColorDetectionNuevo colorChecker = new ColorDetectionNuevo();
         //if (android.os.Build.VERSION.SDK_INT >= android.os.Build.VERSION_CODES.Q) {
-            color = colorChecker.getColor(fieldImage);
+        color = colorChecker.getColor(fieldImage);
         //}
 
         telemetry.addData("The cone is ", color);
@@ -107,7 +104,6 @@ public class Auto1 extends LinearOpMode {
             drive.followTrajectorySequence(trajSeq);
 
 
-
         if (color.equals(null)) {
             telemetry.addData("Null?", "heck yeah it's null");
             telemetry.update();
@@ -119,91 +115,22 @@ public class Auto1 extends LinearOpMode {
         sleep(1000);
         //Chooses where to park based on the color of the cone.
         //if (!color.equals(null)) {
-            if (color.equals("blue")) {
-                //Strafe 24 inches
-                drive.followTrajectorySequence(nextZone);
-                telemetry.addData("Color: ", color);
-                telemetry.update();
-            } else if (color.equals("red")) {
-                //Strafe 48 inches
-                drive.followTrajectorySequence(nextZone);
-                drive.followTrajectorySequence(nextZone);
-                telemetry.addData("Color: ", color);
-            } else if (color.equals("green")) {
-                telemetry.addData("Color: ", color);
-            } else {
-                String noColor = "Color not detected.";
-                telemetry.addData("Color: ", noColor);
-            }
-        //}
-    }
-
-    @Autonomous(name = "Auto1")
-    public static class ColorSensorAuto extends LinearOpMode {
-
-        // create motor and servo objects
-        private CRServo claw = null;
-
-        @RequiresApi(api = Build.VERSION_CODES.Q)
-        @Override
-        public void runOpMode() {
-            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-
-            Pose2d startPose = new Pose2d(0, 0, 0);
-            drive.setPoseEstimate(startPose);
-
-            Bitmap fieldImage = null;
-            String position = "start";
-
-
-            telemetry.addData("!@!", String.valueOf(fieldImage.getColor(0,0))); // checks if image is grabbed
+        if (color.equals("blue")) {
+            //Strafe 24 inches
+            drive.followTrajectorySequence(nextZone);
+            telemetry.addData("Color: ", color);
             telemetry.update();
-            sleep(2000);
-            String color = "value retrieval failed";
-
-
-            telemetry.addData("The cone is ", color);
-            telemetry.update();
-
-            TrajectorySequence trajSeq = drive.trajectorySequenceBuilder(startPose)
-
-                    .forward(3)
-                    .turn(90)
-                    //.forward(3)
-                    //Opens Claw Here
-                    //.addTemporalMarker(() -> claw.setPower(.5))
-                    //.waitSeconds(.5)
-                    //.back(3)
-                    .forward(24)
-                    .turn(-90)
-                    .forward(45)
-                    .turn(-90)
-                    .build();
-
-            TrajectorySequence nextZone = drive.trajectorySequenceBuilder(startPose)
-                    .forward(24)
-                    .build();
-
-
-            waitForStart();
-            if (!isStopRequested())
-                drive.followTrajectorySequence(trajSeq);
-
-            sleep(1000);
-                if (color.equals("blue")) {
-                    drive.followTrajectorySequence(nextZone);
-                    telemetry.addData("Color: ", color);
-                    telemetry.update();
-                } else if (color.equals("red")) {
-                    drive.followTrajectorySequence(nextZone);
-                    drive.followTrajectorySequence(nextZone);
-                    telemetry.addData("Color: ", color);
-                } else if (color.equals("green")) {
-                    telemetry.addData("Color: ", color);
-                } else {
-                    String noColor = "Color not detected.";
-                    telemetry.addData("Color: ", noColor);
-                }
+        } else if (color.equals("red")) {
+            //Strafe 48 inches
+            drive.followTrajectorySequence(nextZone);
+            drive.followTrajectorySequence(nextZone);
+            telemetry.addData("Color: ", color);
+        } else if (color.equals("green")) {
+            telemetry.addData("Color: ", color);
+        } else {
+            String noColor = "Color not detected.";
+            telemetry.addData("Color: ", noColor);
         }
+        //}
     }
 }
