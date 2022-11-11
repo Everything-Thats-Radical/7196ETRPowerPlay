@@ -74,18 +74,21 @@ import java.util.Locale;
 
 
             TrajectorySequence initialDriveForScan = drive.trajectorySequenceBuilder(startPose)
-                    .forward(18)
+                    .forward(28)
                     .build();
 
             TrajectorySequence leftPark = drive.trajectorySequenceBuilder(startPose)
+                    .back(5)
                     .turn(3.14/2)
-                    .forward(20)
+                    .forward(30)
                     .build();
 
             TrajectorySequence rightPark = drive.trajectorySequenceBuilder(startPose)
+                    .back(5)
                     .turn(-3.14/2)
-                    .forward(20)
+                    .forward(30)
                     .build();
+
 
             waitForStart();
 
