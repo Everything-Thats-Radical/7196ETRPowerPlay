@@ -4,25 +4,16 @@ import android.app.Activity;
 import android.graphics.Color;
 import android.view.View;
 
-import com.qualcomm.hardware.bosch.BNO055IMU;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
-import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
-import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
-import com.qualcomm.robotcore.hardware.ColorSensor;
-import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
-import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
-
-@Autonomous(name = "CompAuto")
-public class CompAuto extends LinearOpMode {
+@Autonomous(name = "LRCD")
+public class LRCD extends LinearOpMode {
     // Declare OpMode members. (attributes of OP mode)
     private ElapsedTime runtime = new ElapsedTime();
     private DcMotor FLDrive = null;
@@ -30,7 +21,7 @@ public class CompAuto extends LinearOpMode {
     private DcMotor BLDrive = null;
     private DcMotor BRDrive = null;
 
-    final double ticksPerInch = 42.78;
+    final double ticksPerInch = 1120;
 
     ColorSensor colorSensor;
     DistanceSensor distanceSensor;
@@ -191,6 +182,9 @@ public class CompAuto extends LinearOpMode {
         //double robotTurnedAngle = 0;
 
         //angle = angle * .9; //incrementation to account for drift
+
+        //Constants: 90 degree turn with REV 40-1's:
+        //Constants: 180 degree turn with REV 40-1's:
 
         frontRight.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
         frontLeft.setMode(DcMotor.RunMode.RUN_USING_ENCODER);
