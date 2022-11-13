@@ -64,6 +64,7 @@ import java.util.Locale;
             }
 
             Pose2d startPose = new Pose2d(0, 0, 0);
+            Pose2d scanPose = new Pose2d(0, -25, 0);
             drive.setPoseEstimate(startPose);
 
             // send the info back to driver station using telemetry function.
@@ -73,21 +74,49 @@ import java.util.Locale;
             // to the HSVToColor method.
 
 
-            TrajectorySequence initialDriveForScan = drive.trajectorySequenceBuilder(startPose)
-                    .forward(28)
+            TrajectorySequence initialDriveForScan = drive.trajectorySequenceBuilder(new Pose2d())
+                    .forward(25,
+                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build();
 
-            TrajectorySequence leftPark = drive.trajectorySequenceBuilder(startPose)
-                    .back(5)
+            TrajectorySequence driveAfterScan = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+                    .forward(5,
+                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build();
+
+            TrajectorySequence turnLeft = drive.trajectorySequenceBuilder(driveAfterScan.end())
                     .turn(3.14/2)
-                    .forward(30)
                     .build();
 
-            TrajectorySequence rightPark = drive.trajectorySequenceBuilder(startPose)
-                    .back(5)
+            TrajectorySequence turnRight = drive.trajectorySequenceBuilder(driveAfterScan.end())
                     .turn(-3.14/2)
-                    .forward(30)
                     .build();
+
+            TrajectorySequence parkDriveRight = drive.trajectorySequenceBuilder(turnRight.end())
+                    .forward(25,
+                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build();
+
+            TrajectorySequence parkDriveLeft = drive.trajectorySequenceBuilder(turnLeft.end())
+                    .forward(25,
+                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build();
+/*
+            TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(scanPose)
+                    .strafeLeft(30,
+                            SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build();
+            TrajectorySequence parkRight = drive.trajectorySequenceBuilder(scanPose)
+                    .strafeRight(30,
+                            SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build();
+*/
 
 
             waitForStart();
@@ -111,7 +140,7 @@ import java.util.Locale;
             });
 
             String position = "start";
-            String coneColor = "red";
+            String coneColor = "green";
 
             int totalReds = colorSensor.red();
             int totalGreens = colorSensor.green();
@@ -136,17 +165,22 @@ import java.util.Locale;
             telemetry.update();
 
             sleep(1000);
+
             if (coneColor.equals("red")) {
                 telemetry.addData("Color: ", coneColor);
                 telemetry.update();
-                drive.followTrajectorySequence(leftPark);
+                drive.followTrajectorySequence(driveAfterScan);
+                drive.followTrajectorySequence(turnLeft);
+                drive.followTrajectorySequence(parkDriveLeft);
             } else if (coneColor.equals("green")) {
                 telemetry.addData("Color: ", coneColor);
                 telemetry.update();
             } else if (coneColor.equals("blue")) {
                 telemetry.addData("Color: ", coneColor);
                 telemetry.update();
-                drive.followTrajectorySequence(rightPark);
+                drive.followTrajectorySequence(driveAfterScan);
+                drive.followTrajectorySequence(turnRight);
+                drive.followTrajectorySequence(parkDriveRight);
             } else {
                 String noColor = "Color not detected.";
                 telemetry.addData("Color: ", noColor);
