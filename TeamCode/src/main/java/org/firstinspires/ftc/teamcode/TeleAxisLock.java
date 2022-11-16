@@ -17,7 +17,7 @@ import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
 import java.lang.Math;
 
 
-@TeleOp (name = "Tele 1.0", group = "Iterative Opmode")
+@TeleOp (name = "TeleAxisLock", group = "Iterative Opmode")
 public class TeleAxisLock extends OpMode {
 
     //Declare OpMode members

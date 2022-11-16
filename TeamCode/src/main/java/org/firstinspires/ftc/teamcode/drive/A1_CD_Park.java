@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.drive;
 
 import android.app.Activity;
-import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.os.Build;
 import android.view.View;
@@ -11,24 +10,14 @@ import androidx.annotation.RequiresApi;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
-import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
-import com.qualcomm.robotcore.hardware.NormalizedColorSensor;
-import com.qualcomm.robotcore.hardware.NormalizedRGBA;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
-import org.firstinspires.ftc.robotcore.external.ClassFactory;
-import org.firstinspires.ftc.robotcore.external.hardware.camera.WebcamName;
-import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
-import org.firstinspires.ftc.robotcore.internal.network.CallbackLooper;
-import org.firstinspires.ftc.robotcore.internal.system.AppUtil;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-import java.util.Locale;
-
-@Autonomous(name = "A1_RR_P")
-    public class AutoWithCD extends LinearOpMode {
+@Autonomous(name = "A1_CD_Park")
+    public class A1_CD_Park extends LinearOpMode {
 
         // create motor and servo objects
         //private CRServo claw = null;
@@ -81,10 +70,11 @@ import java.util.Locale;
                     .build();
 
             TrajectorySequence driveAfterScan = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                    .forward(5,
+                    .forward(7,
                             SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build();
+
 
             TrajectorySequence turnLeft = drive.trajectorySequenceBuilder(driveAfterScan.end())
                     .turn(3.14/2)
@@ -105,19 +95,26 @@ import java.util.Locale;
                             SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                             SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                     .build();
-/*
-            TrajectorySequence parkLeft = drive.trajectorySequenceBuilder(scanPose)
-                    .strafeLeft(30,
-                            SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
-            TrajectorySequence parkRight = drive.trajectorySequenceBuilder(scanPose)
-                    .strafeRight(30,
-                            SampleMecanumDrive.getVelocityConstraint(15, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
-*/
 
+            TrajectorySequence leftParkFinalTurn = drive.trajectorySequenceBuilder(parkDriveLeft.end())
+                    .turn(-3.14/2)
+                    .build();
+
+            TrajectorySequence rightParkFinalTurn = drive.trajectorySequenceBuilder(parkDriveRight.end())
+                    .turn(3.14/2)
+                    .build();
+
+            TrajectorySequence finalDriveRight = drive.trajectorySequenceBuilder(rightParkFinalTurn.end())
+                    .forward(8,
+                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build();
+
+            TrajectorySequence finalDriveLeft = drive.trajectorySequenceBuilder(leftParkFinalTurn.end())
+                    .forward(8,
+                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                    .build();
 
             waitForStart();
 
@@ -172,15 +169,20 @@ import java.util.Locale;
                 drive.followTrajectorySequence(driveAfterScan);
                 drive.followTrajectorySequence(turnLeft);
                 drive.followTrajectorySequence(parkDriveLeft);
+                drive.followTrajectorySequence(leftParkFinalTurn);
+                drive.followTrajectorySequence(finalDriveLeft);
             } else if (coneColor.equals("green")) {
                 telemetry.addData("Color: ", coneColor);
                 telemetry.update();
+                drive.followTrajectorySequence(driveAfterScan);
             } else if (coneColor.equals("blue")) {
                 telemetry.addData("Color: ", coneColor);
                 telemetry.update();
                 drive.followTrajectorySequence(driveAfterScan);
                 drive.followTrajectorySequence(turnRight);
                 drive.followTrajectorySequence(parkDriveRight);
+                drive.followTrajectorySequence(rightParkFinalTurn);
+                drive.followTrajectorySequence(finalDriveRight);
             } else {
                 String noColor = "Color not detected.";
                 telemetry.addData("Color: ", noColor);
