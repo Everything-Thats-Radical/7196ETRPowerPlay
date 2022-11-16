@@ -27,7 +27,7 @@ public class Tele1 extends OpMode {
     private DcMotor BLDrive = null;
     private DcMotor BRDrive = null;
     private CRServo liftArm = null;
-    private CRServo liftClaw = null;
+    private CRServo clampyBoi = null;
     private DcMotor STRAIGHTUPPPP = null;
     private DcMotor spinnyBoi = null;
 
@@ -46,7 +46,7 @@ public class Tele1 extends OpMode {
         BLDrive  = hardwareMap.get(DcMotor.class, "BLDrive");
         BRDrive = hardwareMap.get(DcMotor.class, "BRDrive");
         liftArm = hardwareMap.get(CRServo.class, "liftArm");
-        liftClaw = hardwareMap.get(CRServo.class, "liftClaw");
+        clampyBoi = hardwareMap.get(CRServo.class, "liftClaw");
         STRAIGHTUPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUPPPP");
         spinnyBoi = hardwareMap.get(DcMotor.class, "SpinnyBoi");
 
@@ -55,7 +55,7 @@ public class Tele1 extends OpMode {
         FRDrive.setDirection(DcMotor.Direction.REVERSE);
         BRDrive.setDirection(DcMotor.Direction.REVERSE);
         liftArm.setDirection(CRServo.Direction.FORWARD);
-        liftClaw.setDirection(CRServo.Direction.FORWARD);
+        clampyBoi.setDirection(CRServo.Direction.FORWARD);
         STRAIGHTUPPPP.setDirection(DcMotor.Direction.REVERSE);
         spinnyBoi.setDirection(DcMotor.Direction.REVERSE);
 
@@ -86,8 +86,6 @@ public class Tele1 extends OpMode {
     public void loop() { //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
 
         // Retrieve lift values from controller
-
-
 
         boolean armRight = gamepad2.x;
         boolean armLeft = gamepad2.b;
@@ -166,19 +164,19 @@ public class Tele1 extends OpMode {
 
 
         if (clawOpen && !clawClosed) {
-            liftClaw.setPower(1);
+            clampyBoi.setPower(1);
         } else if(!clawOpen && clawClosed){
-            liftClaw.setPower(-1);
+            clampyBoi.setPower(-1);
         } else {
-            liftClaw.setPower(0);
+            clampyBoi.setPower(0);
         }
 
         if (clawOpen && !clawClosed) {
-            liftClaw.setPower(1);
+            clampyBoi.setPower(1);
         } else if(!clawOpen && clawClosed){
-            liftClaw.setPower(-1);
+            clampyBoi.setPower(-1);
         } else {
-            liftClaw.setPower(0);
+            clampyBoi.setPower(0);
         }
 
         STRAIGHTUPPPP.setPower(-STRAIGHTUPPPPPower);
@@ -203,7 +201,7 @@ public class Tele1 extends OpMode {
         BLDrive.setPower(0);
         BRDrive.setPower(0);
         liftArm.setPower(0);
-        liftClaw.setPower(0);
+        clampyBoi.setPower(0);
         STRAIGHTUPPPP.setPower(0);
         spinnyBoi.setPower(0);
     }
