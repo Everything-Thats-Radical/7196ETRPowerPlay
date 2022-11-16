@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import static java.lang.Math.signum;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
@@ -205,11 +207,12 @@ public class A2_CD_Score_Park extends LinearOpMode {
     }
 
     public void rotateSuzan(String direction, int degrees, double power){
-        int ticksGoal = (degrees/360) * 1120;
-        int initialPosition = spinnyBoi.getCurrentPosition();
-        int currentPosition = 0;
+        double ticksNeeded = (degrees/360) * 1120;
+        double initialPosition = spinnyBoi.getCurrentPosition();
+        double currentPosition = 0;
         int directionSign;
-        int ticksError;
+        double ticksError;
+        double ticksMoved;
 
         if(direction.equals("right")){
             directionSign = 1;
@@ -218,8 +221,10 @@ public class A2_CD_Score_Park extends LinearOpMode {
         }else{
             directionSign = -1;
         }
-
-        ticksError = initialPosition + ticksGoal + spinnyBoi.getCurrentPosition();
+        //* signum(spinnyBoi.getCurrentPosition())
+        currentPosition = spinnyBoi.getCurrentPosition(); // make currentPosition positive
+        ticksMoved = Math.abs(initialPosition - currentPosition);
+        ticksError = ticksNeeded - ticksMoved; // how many ticks we need to move
         while (ticksError > 0){
             spinnyBoi.setPower(power * directionSign);
         }
