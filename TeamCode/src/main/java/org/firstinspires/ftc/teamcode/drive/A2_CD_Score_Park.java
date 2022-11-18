@@ -28,7 +28,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
     private DcMotor STRAIGHTUPPPP = null;
     private DcMotor spinnyBoi = null;
 
-    final double ticks_per_inch = (1120 / (2.952 * 2 * Math.PI));
+    //final double ticks_per_inch = (1120 / (2.952 * 2 * Math.PI));
 
     ColorSensor colorSensor;
     DistanceSensor distanceSensor;
@@ -98,7 +98,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(3.14/2)
-                .forward(25,
+                .forward(24,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(-3.14/2)
@@ -112,7 +112,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(-3.14/2)
-                .forward(25,
+                .forward(24,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(3.14/2)
@@ -131,8 +131,19 @@ public class A2_CD_Score_Park extends LinearOpMode {
         waitForStart();
 
         if (!isStopRequested()) {
-            drive.followTrajectorySequence(initialDriveForScan);
+            //drive.followTrajectorySequence(initialDriveForScan);
         }
+
+        sleep(1000);
+        telemetry.addData("Starting turn ", "heck yeah" );
+        telemetry.update();
+        clawControl("clamp");
+        moveLift("up", 27, 1);
+        rotateSuzan("left", 90, .1);
+        clawControl("");
+        telemetry.addData("Turn done ", "heck yeah");
+        telemetry.update();
+
 
         relativeLayout.post(new Runnable() {
             public void run() {
@@ -170,11 +181,10 @@ public class A2_CD_Score_Park extends LinearOpMode {
 
 
 
-        telemetry.addData("The cone is ", coneColor);
-        telemetry.update();
 
-        sleep(1000);
 
+
+        /*
         if (coneColor.equals("red")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
@@ -196,6 +206,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
             telemetry.addData("Color: ", noColor);
             telemetry.update();
         }
+        */
     }
 
     public void lift(String direction, int power){
@@ -206,28 +217,81 @@ public class A2_CD_Score_Park extends LinearOpMode {
 
     }
 
-    public void rotateSuzan(String direction, int degrees, double power){
+    public void rotateSuzan(String direction, double degrees, double power){
         double ticksNeeded = (degrees/360) * 1120;
         double initialPosition = spinnyBoi.getCurrentPosition();
         double currentPosition = 0;
         int directionSign;
-        double ticksError;
         double ticksMoved;
 
         if(direction.equals("right")){
             directionSign = 1;
-        }else if(direction.equals("right")){
+        }else if(direction.equals("left")){
             directionSign = -1;
         }else{
             directionSign = -1;
         }
-        //* signum(spinnyBoi.getCurrentPosition())
-        currentPosition = spinnyBoi.getCurrentPosition(); // make currentPosition positive
+
         ticksMoved = Math.abs(initialPosition - currentPosition);
-        ticksError = ticksNeeded - ticksMoved; // how many ticks we need to move
-        while (ticksError > 0){
+
+        while (ticksNeeded > ticksMoved){
+            currentPosition = spinnyBoi.getCurrentPosition();
+            ticksMoved = Math.abs(initialPosition - currentPosition);
+            /*
+            telemetry.addData("ticksNeeded ", ticksNeeded);
+            telemetry.addData("ticksMoved ", ticksMoved);
+            telemetry.addData("ticksNeeded - ticksMoved ", ticksNeeded - ticksMoved);
+            telemetry.update();
+             */
             spinnyBoi.setPower(power * directionSign);
         }
+        spinnyBoi.setPower(0);
+    }
+
+    public void moveLift(String direction, double height, double power){
+        double ticks_per_inch = (1120 / (1.75 * 2 * Math.PI)); //TICKS PER INCH MAY BE INCORRECT
+        // THE LIFT WENT HIGHER THAN EXPECTED LAST TIME THIS WAS RUN AND BROKE THE LIFT
+        // FIND ACTUAL TICKS PER INCH BEFORE RUNNING
+        double ticksNeeded = height * ticks_per_inch;
+        double initialPosition = STRAIGHTUPPPP.getCurrentPosition();
+        double currentPosition = STRAIGHTUPPPP.getCurrentPosition();
+        int directionSign = 1;
+        double ticksMoved;
+
+        if(direction.equals("up")){
+            directionSign = 1;
+        }else if(direction.equals("down")){
+            directionSign = -1;
+        }else{
+            directionSign = -1;
+        }
+
+        ticksMoved = Math.abs(initialPosition - currentPosition);
+        while (ticksNeeded > ticksMoved){
+            currentPosition = STRAIGHTUPPPP.getCurrentPosition();
+            ticksMoved = Math.abs(initialPosition - currentPosition);
+            /*
+            telemetry.addData("ticksNeeded ", ticksNeeded);
+            telemetry.addData("ticksMoved ", ticksMoved);
+            telemetry.addData("ticksNeeded - ticksMoved ", ticksNeeded - ticksMoved);
+            telemetry.update();
+             */
+            STRAIGHTUPPPP.setPower(power * directionSign);
+        }
+        STRAIGHTUPPPP.setPower(0);
+    }
+
+    public void clawControl(String state){
+        int directionSign = 1;
+
+        if(state.equals("clamp")){
+            directionSign = 1;
+        }else if(state.equals("release")){
+            directionSign = -1;
+        }else{
+            directionSign = -1;
+        }
+        clampyBoi.setPower(directionSign);
     }
 }
 
