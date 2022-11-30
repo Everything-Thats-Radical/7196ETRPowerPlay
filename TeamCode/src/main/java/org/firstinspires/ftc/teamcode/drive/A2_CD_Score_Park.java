@@ -95,37 +95,32 @@ public class A2_CD_Score_Park extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        TrajectorySequence redZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                .forward(7,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        TrajectorySequence closer = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+                .forward(9,
+                    SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                    SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+
+        TrajectorySequence redZone = drive.trajectorySequenceBuilder(closer.end())
+
                 .turn(3.14/2)
                 .forward(24,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(-3.14/2)
-                .forward(8,
+                .forward(11,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence blueZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                .forward(7,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(-3.14/2)
                 .forward(24,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(3.14/2)
-                .forward(8,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-        //-----------------------------------
-
-        TrajectorySequence greenZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                .forward(10,
+                .forward(11,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -187,24 +182,25 @@ public class A2_CD_Score_Park extends LinearOpMode {
 
 
 
-
-
-
-
         if (coneColor.equals("red")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
+            drive.followTrajectorySequence(closer);
+            scoreCone();
             drive.followTrajectorySequence(redZone);
 
         } else if (coneColor.equals("green")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
             //rotateSuzan("right", 90, .2);
-            drive.followTrajectorySequence(greenZone);
+            drive.followTrajectorySequence(closer);
+            scoreCone();
 
         } else if (coneColor.equals("blue")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
+            drive.followTrajectorySequence(closer);
+            scoreCone();
             drive.followTrajectorySequence(blueZone);
 
         } else {
@@ -239,7 +235,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
         }
 
         ticksMoved = Math.abs(initialPosition - currentPosition);
-
+        sleep(1500);
         while (ticksNeeded > ticksMoved){
             clawControl("clamp");
             currentPosition = spinnyBoi.getCurrentPosition();
@@ -301,6 +297,13 @@ public class A2_CD_Score_Park extends LinearOpMode {
             directionSign = -1;
         }
         clampyBoi.setPower(directionSign);
+    }
+
+    public void scoreCone(){
+        moveLift("up", 16, .5);
+        rotateSuzan("left", 100, .2);
+        clawControl("release");
+        rotateSuzan("right", 100, .2);
     }
 }
 
