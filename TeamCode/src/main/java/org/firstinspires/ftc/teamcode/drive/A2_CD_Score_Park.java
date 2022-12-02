@@ -111,7 +111,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
                     SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(3.14/2)
                 .forward(2,
-                        SampleMecanumDrive.getVelocityConstraint(4, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(-3.14/2)
                 .forward(10,
@@ -331,7 +331,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
     }
 
     public void scoreCone(){
-        moveLift("up", 10, .5);
+        moveLift("up", 15, .5);
         rotateSuzan("left", 60, .2);
         sleep(500);
         //moveLift("down", 10, .5);
@@ -342,7 +342,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
     }
 
     public void liftReset(){
-        moveLift("down", 10, .5);
+        moveLift("down", 15, .5);
     }
 }
 
