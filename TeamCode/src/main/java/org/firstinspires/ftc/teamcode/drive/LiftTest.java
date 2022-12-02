@@ -127,7 +127,7 @@ public class LiftTest extends LinearOpMode {
                 .build();
 
         waitForStart();
-        moveLift("up", 16, .5);
+        moveLift("up", 16, 1);
         rotateSuzan("left", 100, .2);
     }
 

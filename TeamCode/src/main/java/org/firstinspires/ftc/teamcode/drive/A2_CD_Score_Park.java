@@ -20,6 +20,10 @@ import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
+/* Our 3rd in command, Troy Tomson, has made an amazing piece of art that is this code.
+Although janky, we accept it as beautiful, brave, and stunning.
+ */
+
 @Autonomous(name = "A2_CD_Score_Park")
 public class A2_CD_Score_Park extends LinearOpMode {
 
@@ -90,33 +94,52 @@ public class A2_CD_Score_Park extends LinearOpMode {
         // TRAJECTORY SEQUENCES BUILT
         //----------------------------------
         TrajectorySequence initialDriveForScan = drive.trajectorySequenceBuilder(new Pose2d())
-                .forward(25,
+                .forward(26,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
         TrajectorySequence closer = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                .forward(9,
+                .forward(11,
                     SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                     SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-
-        TrajectorySequence redZone = drive.trajectorySequenceBuilder(closer.end())
-
+        TrajectorySequence scoreAlign = drive.trajectorySequenceBuilder(closer.end())
+                .back(10,
+                    SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                    SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(3.14/2)
-                .forward(24,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(2,
+                        SampleMecanumDrive.getVelocityConstraint(4, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(-3.14/2)
+                .forward(10,
+                        SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+
+        TrajectorySequence redZone = drive.trajectorySequenceBuilder(scoreAlign.end())
+                .back(7,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(3.14/2, 4, 10)
+                .forward(19,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(-3.2/2)
                 .forward(11,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        TrajectorySequence blueZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                .turn(-3.14/2)
-                .forward(24,
+        TrajectorySequence blueZone = drive.trajectorySequenceBuilder(scoreAlign.end())
+                .back(7,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(-3.14/2, 4, 10)
+                .forward(27,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(3.14/2)
@@ -124,7 +147,6 @@ public class A2_CD_Score_Park extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-
         waitForStart();
 
         if (!isStopRequested()) {
@@ -186,22 +208,31 @@ public class A2_CD_Score_Park extends LinearOpMode {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
             drive.followTrajectorySequence(closer);
+            sleep(1500);
+            drive.followTrajectorySequence(scoreAlign);
             scoreCone();
             drive.followTrajectorySequence(redZone);
+            liftReset();
 
         } else if (coneColor.equals("green")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
-            //rotateSuzan("right", 90, .2);
             drive.followTrajectorySequence(closer);
+            sleep(1500);
+            //rotateSuzan("right", 90, .2);
+            drive.followTrajectorySequence(scoreAlign);
             scoreCone();
+            liftReset();
 
         } else if (coneColor.equals("blue")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
             drive.followTrajectorySequence(closer);
+            sleep(1500);
+            drive.followTrajectorySequence(scoreAlign);
             scoreCone();
             drive.followTrajectorySequence(blueZone);
+            liftReset();
 
         } else {
             String noColor = "Color not detected.";
@@ -300,10 +331,18 @@ public class A2_CD_Score_Park extends LinearOpMode {
     }
 
     public void scoreCone(){
-        moveLift("up", 16, .5);
-        rotateSuzan("left", 100, .2);
+        moveLift("up", 10, .5);
+        rotateSuzan("left", 60, .2);
+        sleep(500);
+        //moveLift("down", 10, .5);
         clawControl("release");
-        rotateSuzan("right", 100, .2);
+        sleep(500);
+        //moveLift("up", 10, .5);
+        rotateSuzan("right", 90, .2);
+    }
+
+    public void liftReset(){
+        moveLift("down", 10, .5);
     }
 }
 
