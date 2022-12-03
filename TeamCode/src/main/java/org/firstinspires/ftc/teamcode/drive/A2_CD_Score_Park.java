@@ -106,15 +106,15 @@ public class A2_CD_Score_Park extends LinearOpMode {
                 .build();
 
         TrajectorySequence scoreAlign = drive.trajectorySequenceBuilder(closer.end())
-                .back(10,
+                .back(7,
                     SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                     SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(3.14/2)
-                .forward(2,
-                        SampleMecanumDrive.getVelocityConstraint(5, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                .forward(5.7,
+                        SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .turn(-3.14/2)
-                .forward(10,
+                .forward(7,
                         SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
@@ -147,6 +147,13 @@ public class A2_CD_Score_Park extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
+
+        TrajectorySequence coneGround = drive.trajectorySequenceBuilder(scoreAlign.end())
+                .forward(2,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
         waitForStart();
 
         if (!isStopRequested()) {
@@ -209,6 +216,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
             telemetry.update();
             drive.followTrajectorySequence(closer);
             sleep(1500);
+            prepCone();
             drive.followTrajectorySequence(scoreAlign);
             scoreCone();
             drive.followTrajectorySequence(redZone);
@@ -220,15 +228,18 @@ public class A2_CD_Score_Park extends LinearOpMode {
             drive.followTrajectorySequence(closer);
             sleep(1500);
             //rotateSuzan("right", 90, .2);
+            prepCone();
             drive.followTrajectorySequence(scoreAlign);
             scoreCone();
             liftReset();
+            drive.followTrajectorySequence(coneGround);
 
         } else if (coneColor.equals("blue")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
             drive.followTrajectorySequence(closer);
             sleep(1500);
+            prepCone();
             drive.followTrajectorySequence(scoreAlign);
             scoreCone();
             drive.followTrajectorySequence(blueZone);
@@ -330,11 +341,15 @@ public class A2_CD_Score_Park extends LinearOpMode {
         clampyBoi.setPower(directionSign);
     }
 
-    public void scoreCone(){
-        moveLift("up", 15, .5);
-        rotateSuzan("left", 60, .2);
+    public void prepCone(){
+        moveLift("up", 17, .5);
+        rotateSuzan("left", 65, .2);
         sleep(500);
+    }
+
+    public void scoreCone(){
         //moveLift("down", 10, .5);
+        sleep(100);
         clawControl("release");
         sleep(500);
         //moveLift("up", 10, .5);
@@ -342,7 +357,7 @@ public class A2_CD_Score_Park extends LinearOpMode {
     }
 
     public void liftReset(){
-        moveLift("down", 15, .5);
+        moveLift("down", 14, .5);
     }
 }
 

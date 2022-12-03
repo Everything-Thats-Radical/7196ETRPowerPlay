@@ -1,5 +1,7 @@
 package org.firstinspires.ftc.teamcode.drive;
 
+import static java.lang.Math.signum;
+
 import android.app.Activity;
 import android.graphics.Color;
 import android.os.Build;
@@ -10,183 +12,270 @@ import androidx.annotation.RequiresApi;
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
+import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.hardware.SwitchableLight;
 
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
-@Autonomous(name = "A1_CD_Park")
-    public class A1_CD_Park extends LinearOpMode {
+@Autonomous(name = "A1_CD_Score_Park")
+public class A1_CD_Park extends LinearOpMode {
 
-        // create motor and servo objects
-        //private CRServo claw = null;
-        ColorSensor colorSensor;
-        DistanceSensor distanceSensor;
-        @RequiresApi(api = Build.VERSION_CODES.Q)
-        @Override
-        public void runOpMode() {
-            SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
-            // get a reference to the color sensor.
-            colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
+    // create motor and servo objects
+    private CRServo clampyBoi = null;
+    private DcMotor STRAIGHTUPPPP = null;
+    private DcMotor spinnyBoi = null;
 
-            // get a reference to the distance sensor that shares the same name.
-            distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
-            // hsvValues is an array that will hold the hue, saturation, and value information.
+    //final double ticks_per_inch = (1120 / (2.952 * 2 * Math.PI));
 
-            float hsvValues[] = {0F, 0F, 0F};
-            // values is a reference to the hsvValues array.
+    ColorSensor colorSensor;
+    DistanceSensor distanceSensor;
+    @RequiresApi(api = Build.VERSION_CODES.Q)
+    @Override
+    public void runOpMode() {
 
-            final float values[] = hsvValues;
-            // sometimes it helps to multiply the raw RGB values with a scale factor
-            // to amplify/attentuate the measured values.
+        clampyBoi = hardwareMap.get(CRServo.class, "liftClaw");
+        STRAIGHTUPPPP = hardwareMap.get(DcMotor.class, "STRAIGHTUPPPP");
+        spinnyBoi = hardwareMap.get(DcMotor.class, "SpinnyBoi");
 
-            final double SCALE_FACTOR = 255;
-
-            // get a reference to the RelativeLayout so we can change the background
-            // color of the Robot Controller app to match the hue detected by the RGB sensor.
-            int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
-            final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
-
-            if (colorSensor instanceof SwitchableLight) {
-                ((SwitchableLight)colorSensor).enableLight(true);
-            }
-
-            Pose2d startPose = new Pose2d(0, 0, 0);
-            Pose2d scanPose = new Pose2d(0, -25, 0);
-            drive.setPoseEstimate(startPose);
-
-            // send the info back to driver station using telemetry function.
-
-            // change the background color to match the color detected by the RGB sensor.
-            // pass a reference to the hue, saturation, and value array as an argument
-            // to the HSVToColor method.
+        clampyBoi.setDirection(CRServo.Direction.FORWARD);
+        STRAIGHTUPPPP.setDirection(DcMotor.Direction.REVERSE);
+        spinnyBoi.setDirection(DcMotor.Direction.REVERSE);
 
 
-            TrajectorySequence initialDriveForScan = drive.trajectorySequenceBuilder(new Pose2d())
-                    .forward(25,
-                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
+        spinnyBoi.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
+        STRAIGHTUPPPP.setZeroPowerBehavior(DcMotor.ZeroPowerBehavior.BRAKE);
 
-            TrajectorySequence driveAfterScan = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                    .forward(7,
-                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
+        SampleMecanumDrive drive = new SampleMecanumDrive(hardwareMap);
 
+        // get a reference to the color sensor.
+        colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
 
-            TrajectorySequence turnLeft = drive.trajectorySequenceBuilder(driveAfterScan.end())
-                    .turn(3.14/2)
-                    .build();
+        // get a reference to the distance sensor that shares the same name.
+        distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
+        // hsvValues is an array that will hold the hue, saturation, and value information.
 
-            TrajectorySequence turnRight = drive.trajectorySequenceBuilder(driveAfterScan.end())
-                    .turn(-3.14/2)
-                    .build();
+        float hsvValues[] = {0F, 0F, 0F};
+        // values is a reference to the hsvValues array.
 
-            TrajectorySequence parkDriveRight = drive.trajectorySequenceBuilder(turnRight.end())
-                    .forward(25,
-                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
+        final float values[] = hsvValues;
+        // sometimes it helps to multiply the raw RGB values with a scale factor
+        // to amplify/attentuate the measured values.
 
-            TrajectorySequence parkDriveLeft = drive.trajectorySequenceBuilder(turnLeft.end())
-                    .forward(25,
-                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
+        final double SCALE_FACTOR = 255;
 
-            TrajectorySequence leftParkFinalTurn = drive.trajectorySequenceBuilder(parkDriveLeft.end())
-                    .turn(-3.14/2)
-                    .build();
+        // get a reference to the RelativeLayout so we can change the background
+        // color of the Robot Controller app to match the hue detected by the RGB sensor.
+        int relativeLayoutId = hardwareMap.appContext.getResources().getIdentifier("RelativeLayout", "id", hardwareMap.appContext.getPackageName());
+        final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
 
-            TrajectorySequence rightParkFinalTurn = drive.trajectorySequenceBuilder(parkDriveRight.end())
-                    .turn(3.14/2)
-                    .build();
-
-            TrajectorySequence finalDriveRight = drive.trajectorySequenceBuilder(rightParkFinalTurn.end())
-                    .forward(8,
-                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
-
-            TrajectorySequence finalDriveLeft = drive.trajectorySequenceBuilder(leftParkFinalTurn.end())
-                    .forward(8,
-                            SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                            SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                    .build();
-
-            waitForStart();
-
-            if (!isStopRequested()) {
-                drive.followTrajectorySequence(initialDriveForScan);
-            }
-
-            relativeLayout.post(new Runnable() {
-                public void run() {
-                    relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
-                }
-            });
-            telemetry.update();
-
-            // Set the panel back to the default color
-            relativeLayout.post(new Runnable() {
-                public void run() {
-                    relativeLayout.setBackgroundColor(Color.WHITE);
-                }
-            });
-
-            String position = "start";
-            String coneColor = "green";
-
-            int totalReds = colorSensor.red();
-            int totalGreens = colorSensor.green();
-            int totalBlues = colorSensor.blue();
-
-            if (totalReds > totalGreens && totalReds > totalBlues){
-                coneColor= "red";
-            } else if(totalGreens > totalBlues && totalGreens > totalReds){
-                coneColor= "green";
-            } else if(totalBlues > totalGreens && totalBlues > totalReds){
-                coneColor= "blue";
-            }
-
-            /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
-             * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
-             * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
-             * for an explanation of HSV color. */
-
-
-
-            telemetry.addData("The cone is ", coneColor);
-            telemetry.update();
-
-            sleep(1000);
-
-            if (coneColor.equals("red")) {
-                telemetry.addData("Color: ", coneColor);
-                telemetry.update();
-                drive.followTrajectorySequence(driveAfterScan);
-                drive.followTrajectorySequence(turnLeft);
-                drive.followTrajectorySequence(parkDriveLeft);
-                drive.followTrajectorySequence(leftParkFinalTurn);
-                drive.followTrajectorySequence(finalDriveLeft);
-            } else if (coneColor.equals("green")) {
-                telemetry.addData("Color: ", coneColor);
-                telemetry.update();
-                drive.followTrajectorySequence(driveAfterScan);
-            } else if (coneColor.equals("blue")) {
-                telemetry.addData("Color: ", coneColor);
-                telemetry.update();
-                drive.followTrajectorySequence(driveAfterScan);
-                drive.followTrajectorySequence(turnRight);
-                drive.followTrajectorySequence(parkDriveRight);
-                drive.followTrajectorySequence(rightParkFinalTurn);
-                drive.followTrajectorySequence(finalDriveRight);
-            } else {
-                String noColor = "Color not detected.";
-                telemetry.addData("Color: ", noColor);
-            }
+        if (colorSensor instanceof SwitchableLight) {
+            ((SwitchableLight)colorSensor).enableLight(true);
         }
+
+
+        Pose2d startPose = new Pose2d(0, 0, 0);
+        Pose2d scanPose = new Pose2d(0, -25, 0);
+        drive.setPoseEstimate(startPose);
+
+        // send the info back to driver station using telemetry function.
+
+        // change the background color to match the color detected by the RGB sensor.
+        // pass a reference to the hue, saturation, and value array as an argument
+        // to the HSVToColor method.
+
+        // TRAJECTORY SEQUENCES BUILT
+        //----------------------------------
+        TrajectorySequence initialDriveForScan = drive.trajectorySequenceBuilder(new Pose2d())
+                .forward(25,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        TrajectorySequence redZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+                .forward(7,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(3.14/2)
+                .forward(24,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(-3.14/2)
+                .forward(8,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        TrajectorySequence blueZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+                .forward(7,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(-3.14/2)
+                .forward(24,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(3.14/2)
+                .forward(8,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        //-----------------------------------
+
+        TrajectorySequence greenZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+                .forward(10,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+
+        telemetry.update();
+        waitForStart();
+
+        if (!isStopRequested()) {
+            drive.followTrajectorySequence(initialDriveForScan);
+        }
+        
+
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                relativeLayout.setBackgroundColor(Color.HSVToColor(0xff, values));
+            }
+        });
+        telemetry.update();
+
+        // Set the panel back to the default color
+        relativeLayout.post(new Runnable() {
+            public void run() {
+                relativeLayout.setBackgroundColor(Color.WHITE);
+            }
+        });
+
+        String position = "start";
+        String coneColor = "green";
+
+        int totalReds = colorSensor.red();
+        int totalGreens = colorSensor.green();
+        int totalBlues = colorSensor.blue();
+
+        if (totalReds > totalGreens && totalReds > totalBlues){
+            coneColor= "red";
+        } else if(totalGreens > totalBlues && totalGreens > totalReds){
+            coneColor= "green";
+        } else if(totalBlues > totalGreens && totalBlues > totalReds){
+            coneColor= "blue";
+        }
+
+        /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
+         * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
+         * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
+         * for an explanation of HSV color. */
+
+
+
+
+
+
+
+
+        if (coneColor.equals("red")) {
+            telemetry.addData("Color: ", coneColor);
+            telemetry.update();
+            drive.followTrajectorySequence(redZone);
+
+        } else if (coneColor.equals("green")) {
+            telemetry.addData("Color: ", coneColor);
+            telemetry.update();
+            rotateSuzan("right", 90, .2);
+            drive.followTrajectorySequence(greenZone);
+
+        } else if (coneColor.equals("blue")) {
+            telemetry.addData("Color: ", coneColor);
+            telemetry.update();
+            drive.followTrajectorySequence(blueZone);
+
+        } else {
+            String noColor = "Color not detected.";
+            telemetry.addData("Color: ", noColor);
+            telemetry.update();
+        }
+
     }
 
+    public void rotateSuzan(String direction, double degrees, double power){
+        double ticksNeeded = (degrees/360) * 1120;
+        double initialPosition = spinnyBoi.getCurrentPosition();
+        double currentPosition = 0;
+        int directionSign;
+        double ticksMoved;
+
+        if(direction.equals("right")){
+            directionSign = 1;
+        }else if(direction.equals("left")){
+            directionSign = -1;
+        }else{
+            directionSign = -1;
+        }
+
+        ticksMoved = Math.abs(initialPosition - currentPosition);
+
+        while (ticksNeeded > ticksMoved){
+            currentPosition = spinnyBoi.getCurrentPosition();
+            ticksMoved = Math.abs(initialPosition - currentPosition);
+            /*
+            telemetry.addData("ticksNeeded ", ticksNeeded);
+            telemetry.addData("ticksMoved ", ticksMoved);
+            telemetry.addData("ticksNeeded - ticksMoved ", ticksNeeded - ticksMoved);
+            telemetry.update();
+             */
+            spinnyBoi.setPower(power * directionSign);
+        }
+        spinnyBoi.setPower(0);
+    }
+
+    public void moveLift(String direction, double height, double power){
+        double ticks_per_inch = (1120 / (1.75 * 2 * Math.PI)); //TICKS PER INCH MAY BE INCORRECT
+        // THE LIFT WENT HIGHER THAN EXPECTED LAST TIME THIS WAS RUN AND BROKE THE LIFT
+        // FIND ACTUAL TICKS PER INCH BEFORE RUNNING
+        double ticksNeeded = height * ticks_per_inch;
+        double initialPosition = STRAIGHTUPPPP.getCurrentPosition();
+        double currentPosition = STRAIGHTUPPPP.getCurrentPosition();
+        int directionSign = 1;
+        double ticksMoved;
+
+        if(direction.equals("up")){
+            directionSign = 1;
+        }else if(direction.equals("down")){
+            directionSign = -1;
+        }else{
+            directionSign = -1;
+        }
+
+        ticksMoved = Math.abs(initialPosition - currentPosition);
+        while (ticksNeeded > ticksMoved){
+            currentPosition = STRAIGHTUPPPP.getCurrentPosition();
+            ticksMoved = Math.abs(initialPosition - currentPosition);
+            /*
+            telemetry.addData("ticksNeeded ", ticksNeeded);
+            telemetry.addData("ticksMoved ", ticksMoved);
+            telemetry.addData("ticksNeeded - ticksMoved ", ticksNeeded - ticksMoved);
+            telemetry.update();
+             */
+            STRAIGHTUPPPP.setPower(power * directionSign);
+        }
+        STRAIGHTUPPPP.setPower(0);
+    }
+
+    public void clawControl(String state){
+        int directionSign = 1;
+
+        if(state.equals("clamp")){
+            directionSign = 1;
+        }else if(state.equals("release")){
+            directionSign = -1;
+        }else{
+            directionSign = -1;
+        }
+        clampyBoi.setPower(directionSign);
+    }
+}
