@@ -114,7 +114,6 @@ public class Auto1 extends LinearOpMode {
         }
         sleep(1000);
         //Chooses where to park based on the color of the cone.
-        //if (!color.equals(null)) {
         if (color.equals("blue")) {
             //Strafe 24 inches
             drive.followTrajectorySequence(nextZone);
@@ -131,6 +130,6 @@ public class Auto1 extends LinearOpMode {
             String noColor = "Color not detected.";
             telemetry.addData("Color: ", noColor);
         }
-        //}
+
     }
 }

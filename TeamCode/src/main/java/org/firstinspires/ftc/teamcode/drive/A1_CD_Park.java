@@ -135,7 +135,7 @@ public class A1_CD_Park extends LinearOpMode {
         if (!isStopRequested()) {
             drive.followTrajectorySequence(initialDriveForScan);
         }
-        
+
 
         relativeLayout.post(new Runnable() {
             public void run() {
@@ -182,22 +182,26 @@ public class A1_CD_Park extends LinearOpMode {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
             drive.followTrajectorySequence(redZone);
+            rotateSuzan("right", 45, .3);
 
         } else if (coneColor.equals("green")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
             rotateSuzan("right", 90, .2);
             drive.followTrajectorySequence(greenZone);
+            rotateSuzan("right", 45, .3);
 
         } else if (coneColor.equals("blue")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
             drive.followTrajectorySequence(blueZone);
+            rotateSuzan("right", 45, .3);
 
         } else {
             String noColor = "Color not detected.";
             telemetry.addData("Color: ", noColor);
             telemetry.update();
+            rotateSuzan("right", 45, .3);
         }
 
     }
@@ -278,4 +282,6 @@ public class A1_CD_Park extends LinearOpMode {
         }
         clampyBoi.setPower(directionSign);
     }
+
+
 }

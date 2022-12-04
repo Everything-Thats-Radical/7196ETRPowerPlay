@@ -31,6 +31,14 @@ public class TeleAxisLock extends OpMode {
     private DcMotor STRAIGHTUPPPP = null;
     private DcMotor spinnyBoi = null;
 
+    private double currentHeight = 0;
+    // Grab is to get a cone, ground for Ground junction, short, mid, high for respective junctions.
+    private double grabLvl = 0;
+    private double groundLvl = 0.7;
+    private double shortLvl = 14.5;
+    private double midLvl = 24.5;
+    //double highLvl = 34.5;
+
 
 
 
@@ -86,8 +94,6 @@ public class TeleAxisLock extends OpMode {
     public void loop() { //Code to run REPEATEDLY after the driver hits PLAY but before they hit STOP
 
         // Retrieve lift values from controller
-
-
 
         boolean armRight = gamepad2.x;
         boolean armLeft = gamepad2.b;
@@ -193,6 +199,54 @@ public class TeleAxisLock extends OpMode {
                 backRightPower);
         //telemetry.addData("Slides", "left (%.2f), right (%.2f)", x, y);
         telemetry.update();
+    }
+
+    public void autoGoalHeight(double wLevel){
+        double needMove = 0;
+        String d = "up";
+        if(currentHeight >= wLevel){
+            needMove = currentHeight - wLevel;
+            d = "down";
+        } else {
+            needMove = currentHeight + wLevel;
+        }
+        currentHeight += needMove;
+        needMove = Math.abs(needMove);
+        moveLift(d, needMove, .7);
+
+    }
+
+    public void moveLift(String direction, double height, double power){
+        double ticks_per_inch = (1120 / (1.75 * 2 * Math.PI)); //TICKS PER INCH MAY BE INCORRECT
+        // THE LIFT WENT HIGHER THAN EXPECTED LAST TIME THIS WAS RUN AND BROKE THE LIFT
+        // FIND ACTUAL TICKS PER INCH BEFORE RUNNING
+        double ticksNeeded = height * ticks_per_inch;
+        double initialPosition = STRAIGHTUPPPP.getCurrentPosition();
+        double currentPosition = STRAIGHTUPPPP.getCurrentPosition();
+        int directionSign = 1;
+        double ticksMoved;
+
+        if(direction.equals("up")){
+            directionSign = 1;
+        }else if(direction.equals("down")){
+            directionSign = -1;
+        }else{
+            directionSign = -1;
+        }
+
+        ticksMoved = Math.abs(initialPosition - currentPosition);
+        while (ticksNeeded > ticksMoved){
+            currentPosition = STRAIGHTUPPPP.getCurrentPosition();
+            ticksMoved = Math.abs(initialPosition - currentPosition);
+            /*
+            telemetry.addData("ticksNeeded ", ticksNeeded);
+            telemetry.addData("ticksMoved ", ticksMoved);
+            telemetry.addData("ticksNeeded - ticksMoved ", ticksNeeded - ticksMoved);
+            telemetry.update();
+             */
+            STRAIGHTUPPPP.setPower(power * directionSign);
+        }
+        STRAIGHTUPPPP.setPower(0);
     }
 
     @Override
