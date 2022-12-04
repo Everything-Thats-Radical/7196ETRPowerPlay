@@ -77,7 +77,6 @@ public class A1_CD_Park extends LinearOpMode {
 
 
         Pose2d startPose = new Pose2d(0, 0, 0);
-        Pose2d scanPose = new Pose2d(0, -25, 0);
         drive.setPoseEstimate(startPose);
 
         // send the info back to driver station using telemetry function.
@@ -269,6 +268,7 @@ public class A1_CD_Park extends LinearOpMode {
         }
         STRAIGHTUPPPP.setPower(0);
     }
+
 
     public void clawControl(String state){
         int directionSign = 1;

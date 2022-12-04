@@ -8,6 +8,7 @@ import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
+import com.qualcomm.robotcore.hardware.DistanceSensor;
 import com.qualcomm.robotcore.util.ElapsedTime;
 
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
@@ -30,6 +31,7 @@ public class TeleAxisLock extends OpMode {
     private CRServo liftClaw = null;
     private DcMotor STRAIGHTUPPPP = null;
     private DcMotor spinnyBoi = null;
+    private DistanceSensor dist;
 
     private double currentHeight = 0;
     // Grab is to get a cone, ground for Ground junction, short, mid, high for respective junctions.
@@ -99,6 +101,12 @@ public class TeleAxisLock extends OpMode {
         boolean armLeft = gamepad2.b;
         boolean clawOpen = gamepad2.y;
         boolean clawClosed = gamepad2.a;
+
+        boolean grab = gamepad2.dpad_down;
+        boolean ground = gamepad2.dpad_left;
+        boolean small = gamepad2.dpad_right;
+        boolean mid = gamepad2.dpad_up;
+
         boolean slowMode = gamepad1.right_bumper;
         double speedMultiplier;
 
@@ -153,6 +161,9 @@ public class TeleAxisLock extends OpMode {
         // set power to motors
         if(slowMode){
             speedMultiplier = .3;
+            //if(dist.getDistance() >= SomeValue && distance <= SomeValue){
+                clawControl("release");
+            //}
         }else{
             speedMultiplier = 1.0;
         }
@@ -187,6 +198,18 @@ public class TeleAxisLock extends OpMode {
             liftClaw.setPower(0);
         }
 
+        if(grab && !(ground) && !(small) && !(mid)){
+            autoGoalHeight(grabLvl);
+        } else if(!(grab) && ground && !(small) && !(mid)){
+            autoGoalHeight(groundLvl);
+        } else if(!(grab) && !(ground) && small && !(mid)){
+            autoGoalHeight(shortLvl);
+        } else if(!(grab) && !(ground) && !(small) && mid){
+            autoGoalHeight(midLvl);
+        } else {
+            liftArm.setPower(0);
+        }
+
         STRAIGHTUPPPP.setPower(-STRAIGHTUPPPPPower);
 
         spinnyBoi.setPower(spinnyBoiPower/4);
@@ -209,16 +232,15 @@ public class TeleAxisLock extends OpMode {
             d = "down";
         } else {
             needMove = currentHeight + wLevel;
+            clawControl("clamp");
         }
         currentHeight += needMove;
         needMove = Math.abs(needMove);
         moveLift(d, needMove, .7);
-
     }
 
     public void moveLift(String direction, double height, double power){
-        double ticks_per_inch = (1120 / (1.75 * 2 * Math.PI)); //TICKS PER INCH MAY BE INCORRECT
-        // THE LIFT WENT HIGHER THAN EXPECTED LAST TIME THIS WAS RUN AND BROKE THE LIFT
+        double ticks_per_inch = (1120 / (1.75 * 2 * Math.PI));
         // FIND ACTUAL TICKS PER INCH BEFORE RUNNING
         double ticksNeeded = height * ticks_per_inch;
         double initialPosition = STRAIGHTUPPPP.getCurrentPosition();
@@ -247,6 +269,19 @@ public class TeleAxisLock extends OpMode {
             STRAIGHTUPPPP.setPower(power * directionSign);
         }
         STRAIGHTUPPPP.setPower(0);
+    }
+
+    public void clawControl(String state){
+        int directionSign = 1;
+
+        if(state.equals("clamp")){
+            directionSign = 1;
+        }else if(state.equals("release")){
+            directionSign = -1;
+        }else{
+            directionSign = -1;
+        }
+        liftClaw.setPower(directionSign);
     }
 
     @Override
