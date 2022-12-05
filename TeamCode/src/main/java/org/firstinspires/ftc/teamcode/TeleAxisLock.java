@@ -41,7 +41,6 @@ public class TeleAxisLock extends OpMode {
     private double shortLvl = 14.5;
     private double midLvl = 24.5;
     //double highLvl = 34.5;
-    //DistanceUnit unit = new DistanceUnit("inch");
 
 
 
@@ -163,9 +162,9 @@ public class TeleAxisLock extends OpMode {
         // set power to motors
         if(slowMode){
             speedMultiplier = .3;
-            //if((dist.getDistance(unit) >= SomeValue) && (dist.getDistance(unit) <= SomeValue)){
+            if((dist.getDistance(DistanceUnit.INCH) >= 3) && (dist.getDistance(DistanceUnit.INCH) <= 5)){
                 clawControl("release");
-            //}
+                }
         }else{
             speedMultiplier = 1.0;
         }
@@ -222,6 +221,7 @@ public class TeleAxisLock extends OpMode {
         telemetry.addData("Motors", "Front Left (%.2f), Front Right (%.2f), Back Left (%.2f), " +
                         "Back Right (%.2f)", frontLeftPower, frontRightPower, backLeftPower,
                 backRightPower);
+        telemetry.addData("Distance: ", dist.getDistance(DistanceUnit.INCH));
         //telemetry.addData("Slides", "left (%.2f), right (%.2f)", x, y);
         telemetry.update();
     }
