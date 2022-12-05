@@ -163,7 +163,7 @@ public class TeleAxisLock extends OpMode {
         // set power to motors
         if(slowMode){
             speedMultiplier = .3;
-            //if(dist.getDistance() >= SomeValue && distance <= SomeValue){
+            //if((dist.getDistance(unit) >= SomeValue) && (dist.getDistance(unit) <= SomeValue)){
                 clawControl("release");
             //}
         }else{
