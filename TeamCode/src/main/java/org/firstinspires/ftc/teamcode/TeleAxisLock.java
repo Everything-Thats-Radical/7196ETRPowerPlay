@@ -14,6 +14,7 @@ import com.qualcomm.robotcore.util.ElapsedTime;
 import org.firstinspires.ftc.robotcore.external.navigation.AngleUnit;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesOrder;
 import org.firstinspires.ftc.robotcore.external.navigation.AxesReference;
+import org.firstinspires.ftc.robotcore.external.navigation.DistanceUnit;
 
 import java.lang.Math;
 
@@ -40,6 +41,7 @@ public class TeleAxisLock extends OpMode {
     private double shortLvl = 14.5;
     private double midLvl = 24.5;
     //double highLvl = 34.5;
+    //DistanceUnit unit = new DistanceUnit("inch");
 
 
 
