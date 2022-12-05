@@ -9,6 +9,7 @@ import androidx.annotation.RequiresApi;
 
 import com.acmerobotics.roadrunner.geometry.Pose2d;
 import com.qualcomm.robotcore.eventloop.opmode.Autonomous;
+import com.qualcomm.robotcore.eventloop.opmode.Disabled;
 import com.qualcomm.robotcore.eventloop.opmode.LinearOpMode;
 import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
@@ -23,6 +24,7 @@ Although janky, we accept it as beautiful, brave, and stunning.
  */
 
 @Autonomous(name = "A2_CD_Score_Park")
+@Disabled
 public class A3_CD_NewBotAuto extends LinearOpMode {
 
     // create motor and servo objects
@@ -97,60 +99,7 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
 
-        TrajectorySequence closer = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                .forward(11,
-                    SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                    SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
 
-        TrajectorySequence scoreAlign = drive.trajectorySequenceBuilder(closer.end())
-                .back(7,
-                    SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                    SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .turn(3.14/2)
-                .forward(5.7,
-                        SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .turn(-3.14/2)
-                .forward(7,
-                        SampleMecanumDrive.getVelocityConstraint(7, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-
-        TrajectorySequence redZone = drive.trajectorySequenceBuilder(scoreAlign.end())
-                .back(7,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .turn(3.14/2, 4, 10)
-                .forward(19,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .turn(-3.2/2)
-                .forward(11,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        TrajectorySequence blueZone = drive.trajectorySequenceBuilder(scoreAlign.end())
-                .back(7,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .turn(-3.14/2, 4, 10)
-                .forward(27,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .turn(3.14/2)
-                .forward(11,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
-
-        TrajectorySequence coneGround = drive.trajectorySequenceBuilder(scoreAlign.end())
-                .forward(2,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .build();
 
         waitForStart();
 
@@ -212,36 +161,14 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         if (coneColor.equals("red")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
-            drive.followTrajectorySequence(closer);
-            sleep(1500);
-            prepCone();
-            drive.followTrajectorySequence(scoreAlign);
-            scoreCone();
-            drive.followTrajectorySequence(redZone);
-            liftReset();
 
         } else if (coneColor.equals("green")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
-            drive.followTrajectorySequence(closer);
-            sleep(1500);
-            //rotateSuzan("right", 90, .2);
-            prepCone();
-            drive.followTrajectorySequence(scoreAlign);
-            scoreCone();
-            liftReset();
-            drive.followTrajectorySequence(coneGround);
 
         } else if (coneColor.equals("blue")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
-            drive.followTrajectorySequence(closer);
-            sleep(1500);
-            prepCone();
-            drive.followTrajectorySequence(scoreAlign);
-            scoreCone();
-            drive.followTrajectorySequence(blueZone);
-            liftReset();
 
         } else {
             String noColor = "Color not detected.";
