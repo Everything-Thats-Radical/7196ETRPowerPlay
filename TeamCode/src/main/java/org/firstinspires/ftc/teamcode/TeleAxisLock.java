@@ -70,8 +70,7 @@ public class TeleAxisLock extends OpMode {
         STRAIGHTUPPPP.setDirection(DcMotor.Direction.REVERSE);
         spinnyBoi.setDirection(DcMotor.Direction.REVERSE);
 
-        BNO055IMU imu;
-        imu = hardwareMap.get(BNO055IMU.class, "imu");
+        BNO055IMU imu = hardwareMap.get(BNO055IMU.class, "imu");
         BNO055IMU.Parameters parameters = new BNO055IMU.Parameters();
         parameters.angleUnit = BNO055IMU.AngleUnit.DEGREES;
         parameters.accelUnit = BNO055IMU.AccelUnit.METERS_PERSEC_PERSEC;
@@ -129,6 +128,7 @@ public class TeleAxisLock extends OpMode {
         // any other code than this to change that setting. It integrates automatically.
 
         BNO055IMU imu = null;
+
         double joystickHeading = Math.atan2(y, x); // get driver's desired heading in degrees from x and y of joystick
         // idea for atan2 found here https://www.reddit.com/r/FTC/comments/t02l65/field_centric_driving_mecanum/
 

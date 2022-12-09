@@ -23,7 +23,7 @@ import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 Although janky, we accept it as beautiful, brave, and stunning.
  */
 
-@Autonomous(name = "A2_CD_Score_Park")
+@Autonomous(name = "A3_CD_3Cone")
 @Disabled
 public class A3_CD_NewBotAuto extends LinearOpMode {
 
@@ -36,6 +36,7 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
 
     ColorSensor colorSensor;
     DistanceSensor distanceSensor;
+
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void runOpMode() {
@@ -76,7 +77,7 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         final View relativeLayout = ((Activity) hardwareMap.appContext).findViewById(relativeLayoutId);
 
         if (colorSensor instanceof SwitchableLight) {
-            ((SwitchableLight)colorSensor).enableLight(true);
+            ((SwitchableLight) colorSensor).enableLight(true);
         }
 
         clampyBoi.setPower(1);
@@ -100,7 +101,6 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
                 .build();
 
 
-
         waitForStart();
 
         if (!isStopRequested()) {
@@ -109,7 +109,7 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         }
 
         sleep(1000);
-        telemetry.addData("Starting turn ", "heck yeah" );
+        telemetry.addData("Starting turn ", "heck yeah");
         telemetry.update();
         /*
         clawControl("clamp");
@@ -143,19 +143,18 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         int totalGreens = colorSensor.green();
         int totalBlues = colorSensor.blue();
 
-        if (totalReds > totalGreens && totalReds > totalBlues){
-            coneColor= "red";
-        } else if(totalGreens > totalBlues && totalGreens > totalReds){
-            coneColor= "green";
-        } else if(totalBlues > totalGreens && totalBlues > totalReds){
-            coneColor= "blue";
+        if (totalReds > totalGreens && totalReds > totalBlues) {
+            coneColor = "red";
+        } else if (totalGreens > totalBlues && totalGreens > totalReds) {
+            coneColor = "green";
+        } else if (totalBlues > totalGreens && totalBlues > totalReds) {
+            coneColor = "blue";
         }
 
         /* Use telemetry to display feedback on the driver station. We show the red, green, and blue
          * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
          * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
          * for an explanation of HSV color. */
-
 
 
         if (coneColor.equals("red")) {
@@ -177,48 +176,8 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         }
 
     }
-/*
-    public void lift(String direction, int power){
 
-    }
-
-    public void clampPower(boolean closed){
-
-    }
-*/
-    public void rotateSuzan(String direction, double degrees, double power){
-        double ticksNeeded = (degrees/360) * 1120;
-        double initialPosition = spinnyBoi.getCurrentPosition();
-        double currentPosition = 0;
-        int directionSign;
-        double ticksMoved;
-
-        if(direction.equals("right")){
-            directionSign = 1;
-        }else if(direction.equals("left")){
-            directionSign = -1;
-        }else{
-            directionSign = -1;
-        }
-
-        ticksMoved = Math.abs(initialPosition - currentPosition);
-        sleep(1500);
-        while (ticksNeeded > ticksMoved){
-            clawControl("clamp");
-            currentPosition = spinnyBoi.getCurrentPosition();
-            ticksMoved = Math.abs(initialPosition - currentPosition);
-            /*
-            telemetry.addData("ticksNeeded ", ticksNeeded);
-            telemetry.addData("ticksMoved ", ticksMoved);
-            telemetry.addData("ticksNeeded - ticksMoved ", ticksNeeded - ticksMoved);
-            telemetry.update();
-             */
-            spinnyBoi.setPower(power * directionSign);
-        }
-        spinnyBoi.setPower(0);
-    }
-
-    public void moveLift(String direction, double height, double power){
+    public void moveLift(String direction, double height, double power) {
         double revsToInch = (4.35 * Math.PI);
         double ticks_per_inch = (1120 / revsToInch); //TICKS PER INCH MAY BE INCORRECT
         // THE LIFT WENT HIGHER THAN EXPECTED LAST TIME THIS WAS RUN AND BROKE THE LIFT
@@ -229,16 +188,16 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         int directionSign = 1;
         double ticksMoved;
 
-        if(direction.equals("up")){
+        if (direction.equals("up")) {
             directionSign = 1;
-        }else if(direction.equals("down")){
+        } else if (direction.equals("down")) {
             directionSign = -1;
-        }else{
+        } else {
             directionSign = -1;
         }
 
         ticksMoved = Math.abs(initialPosition - currentPosition);
-        while (ticksNeeded > ticksMoved){
+        while (ticksNeeded > ticksMoved) {
             clampyBoi.setPower(1);
             currentPosition = STRAIGHTUPPPP.getCurrentPosition();
             ticksMoved = Math.abs(initialPosition - currentPosition);
@@ -253,36 +212,27 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         STRAIGHTUPPPP.setPower(0);
     }
 
-    public void clawControl(String state){
+    public void clawControl(String state) {
         int directionSign = 1;
 
-        if(state.equals("clamp")){
+        if (state.equals("clamp")) {
             directionSign = 1;
-        }else if(state.equals("release")){
+        } else if (state.equals("release")) {
             directionSign = -1;
-        }else{
+        } else {
             directionSign = -1;
         }
         clampyBoi.setPower(directionSign);
     }
 
-    public void prepCone(){
-        moveLift("up", 17, .5);
-        rotateSuzan("left", 65, .2);
-        sleep(500);
+    public void grabCone() {
+
     }
 
-    public void scoreCone(){
-        //moveLift("down", 10, .5);
-        sleep(100);
+    public void scoreCone() {
+        moveLift("up", 17, .8);
+        sleep(300);
         clawControl("release");
-        sleep(500);
-        //moveLift("up", 10, .5);
-        rotateSuzan("right", 90, .2);
-    }
-
-    public void liftReset(){
-        moveLift("down", 14, .5);
     }
 }
 
