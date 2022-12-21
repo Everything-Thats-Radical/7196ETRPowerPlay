@@ -17,6 +17,8 @@ public class CopiedItV2 extends LinearOpMode {
         DcMotor motorFrontRight = hardwareMap.dcMotor.get("FRDrive");
         DcMotor motorBackRight = hardwareMap.dcMotor.get("BRDrive");
 
+        double desiredHeading = 0;
+
         // Reverse the right side motors
         // Reverse left motors if you are using NeveRests
         motorFrontRight.setDirection(DcMotorSimple.Direction.REVERSE);
@@ -32,12 +34,23 @@ public class CopiedItV2 extends LinearOpMode {
 
         waitForStart();
 
+        desiredHeading = -imu.getAngularOrientation().firstAngle;
+        double yHeading = -imu.getAngularOrientation().firstAngle;
+        double xHeading = -imu.getAngularOrientation().firstAngle + 90;
+        double bHeading = -imu.getAngularOrientation().firstAngle - 90;
+        double aHeading = -imu.getAngularOrientation().firstAngle + 180;
+        
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
             double y = -gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
             double rx = -gamepad1.right_stick_x;
+
+
+            //if (thingything){
+
+            //}
 
             // Read inverse IMU heading, as the IMU heading is CW positive
             double botHeading = -imu.getAngularOrientation().firstAngle;
