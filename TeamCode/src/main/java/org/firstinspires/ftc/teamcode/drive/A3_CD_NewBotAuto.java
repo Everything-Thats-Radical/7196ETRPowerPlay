@@ -20,7 +20,8 @@ import com.qualcomm.robotcore.hardware.SwitchableLight;
 import org.firstinspires.ftc.teamcode.trajectorysequence.TrajectorySequence;
 
 /* Our 3rd in command, Troy Tomson, has made an amazing piece of art that is this code.
-Although janky, we accept it as beautiful, brave, and stunning.
+Although janky, we accept it as beautiful, brave, and stunning. If you don't accept it, you are
+literally codiphobic and want all the poor starving children in Africa to die.
  */
 
 @Autonomous(name = "A3_CD_3Cone")
@@ -101,25 +102,28 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
                 .build();
 
 
+        TrajectorySequence alignPreload = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+                .forward(4,
+                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .turn(-3.14/2)
+                .strafeRight(6)
+                .build();
+
+        TrajectorySequence alignStackScore = drive.trajectorySequenceBuilder(alignPreload.end())
+                .back(7,
+                    SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
+                    SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .strafeRight(14)
+
+                        .build();
+
         waitForStart();
 
         if (!isStopRequested()) {
             clawControl("clamp");
             drive.followTrajectorySequence(initialDriveForScan);
         }
-
-        sleep(1000);
-        telemetry.addData("Starting turn ", "heck yeah");
-        telemetry.update();
-        /*
-        clawControl("clamp");
-        moveLift("up", 27, 1);
-        rotateSuzan("left", 90, .1);
-        clawControl("");
-        */
-
-        telemetry.addData("Turn done ", "heck yeah");
-        telemetry.update();
 
 
         relativeLayout.post(new Runnable() {
@@ -225,14 +229,8 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
         clampyBoi.setPower(directionSign);
     }
 
-    public void grabCone() {
-
-    }
-
-    public void scoreCone() {
-        moveLift("up", 17, .8);
-        sleep(300);
-        clawControl("release");
+    public void grabCone(){
+        
     }
 }
 

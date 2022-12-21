@@ -69,13 +69,15 @@ public class A1_CD_Park_Left extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        TrajectorySequence redZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+        TrajectorySequence moveConeOutOfTheHeckingWay = drive.trajectorySequenceBuilder(new Pose2d())
                 .forward(12,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .back(5,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+                .build();
+        TrajectorySequence redZone = drive.trajectorySequenceBuilder(moveConeOutOfTheHeckingWay.end())
                 .turn(3.14/2)
                 .forward(25,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -85,13 +87,7 @@ public class A1_CD_Park_Left extends LinearOpMode {
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
-        TrajectorySequence blueZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
-                .forward(12,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
-                .back(5,
-                        SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
-                        SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
+        TrajectorySequence blueZone = drive.trajectorySequenceBuilder(moveConeOutOfTheHeckingWay.end())
                 .turn(-3.14/2)
                 .forward(25,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
@@ -102,7 +98,7 @@ public class A1_CD_Park_Left extends LinearOpMode {
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
                 .build();
         //-----------------------------------
-        TrajectorySequence greenZone = drive.trajectorySequenceBuilder(initialDriveForScan.end())
+        TrajectorySequence greenZone = drive.trajectorySequenceBuilder(moveConeOutOfTheHeckingWay.end())
                 .forward(10,
                         SampleMecanumDrive.getVelocityConstraint(10, DriveConstants.MAX_ANG_VEL, DriveConstants.TRACK_WIDTH),
                         SampleMecanumDrive.getAccelerationConstraint(DriveConstants.MAX_ACCEL))
@@ -140,6 +136,9 @@ public class A1_CD_Park_Left extends LinearOpMode {
          * normalized values from the sensor (in the range of 0 to 1), as well as the equivalent
          * HSV (hue, saturation and value) values. See http://web.archive.org/web/20190311170843/https://infohost.nmt.edu/tcc/help/pubs/colortheory/web/hsv.html
          * for an explanation of HSV color. */
+
+        drive.followTrajectorySequence(moveConeOutOfTheHeckingWay);
+
         if (coneColor.equals("red")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
@@ -153,9 +152,8 @@ public class A1_CD_Park_Left extends LinearOpMode {
         } else if (coneColor.equals("blue")) {
             telemetry.addData("Color: ", coneColor);
             telemetry.update();
-            rotateSuzan("right", 20, .3);
+            rotateSuzan("right", 90, .3);
             drive.followTrajectorySequence(blueZone);
-            rotateSuzan("left", 65, .3);
         } else {
             String noColor = "Color not detected.";
             telemetry.addData("Color: ", noColor);
