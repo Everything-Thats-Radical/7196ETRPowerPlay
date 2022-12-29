@@ -39,7 +39,7 @@ public class CopiedItV2 extends LinearOpMode {
         double xHeading = -imu.getAngularOrientation().firstAngle + 90;
         double bHeading = -imu.getAngularOrientation().firstAngle - 90;
         double aHeading = -imu.getAngularOrientation().firstAngle + 180;
-        
+
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
