@@ -22,7 +22,6 @@ public class A1_CD_Park_Right extends LinearOpMode {
     private DcMotor spinnyBoi = null;
     //final double ticks_per_inch = (1120 / (2.952 * 2 * Math.PI));
     ColorSensor colorSensor;
-    DistanceSensor distanceSensor;
     @RequiresApi(api = Build.VERSION_CODES.Q)
     @Override
     public void runOpMode() {
@@ -38,7 +37,6 @@ public class A1_CD_Park_Right extends LinearOpMode {
         // get a reference to the color sensor.
         colorSensor = hardwareMap.get(ColorSensor.class, "sensor_color_distance");
         // get a reference to the distance sensor that shares the same name.
-        distanceSensor = hardwareMap.get(DistanceSensor.class, "sensor_color_distance");
         // hsvValues is an array that will hold the hue, saturation, and value information.
         float hsvValues[] = {0F, 0F, 0F};
         // values is a reference to the hsvValues array.
