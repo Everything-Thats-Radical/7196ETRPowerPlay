@@ -7,7 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
 
 @TeleOp (name = "CopiedItV2", group = "Iterative Opmode")
-public class CopiedItV2 extends LinearOpMode {
+public class CopiedItV2 extends LinearOpMode{
     @Override
     public void runOpMode() throws InterruptedException {
         // Declare our motors
@@ -43,9 +43,9 @@ public class CopiedItV2 extends LinearOpMode {
         if (isStopRequested()) return;
 
         while (opModeIsActive()) {
-            double y = -gamepad1.left_stick_y; // Remember, this is reversed!
+            double y = gamepad1.left_stick_y; // Remember, this is reversed!
             double x = gamepad1.left_stick_x * 1.1; // Counteract imperfect strafing
-            double rx = -gamepad1.right_stick_x;
+            double rx = gamepad1.right_stick_x;
 
 
             //if (thingything){

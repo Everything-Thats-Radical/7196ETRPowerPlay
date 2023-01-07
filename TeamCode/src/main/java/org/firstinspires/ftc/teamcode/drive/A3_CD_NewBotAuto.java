@@ -24,7 +24,7 @@ Although janky, we accept it as beautiful, brave, and stunning. If you don't acc
 literally codiphobic and want all the poor starving children in Africa to die.
  */
 
-@Autonomous(name = "A3_CD_3Cone")
+@Autonomous(name = "A3_CD_ParkRad")
 @Disabled
 public class A3_CD_NewBotAuto extends LinearOpMode {
 
@@ -227,10 +227,6 @@ public class A3_CD_NewBotAuto extends LinearOpMode {
             directionSign = -1;
         }
         clampyBoi.setPower(directionSign);
-    }
-
-    public void grabCone(){
-        
     }
 }
 
